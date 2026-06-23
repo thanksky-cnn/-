@@ -1,0 +1,13 @@
+{
+  "12": {
+    "main_hidden": 256,
+    "aux_hidden": 32,
+    "dropout": 0.1,
+    "aux_dropout": 0.6000000000000001,
+    "lr": 0.004601646491256619,
+    "batch_size": 32,
+    "weight_decay": 3.5931654632560546e-06,
+    "aux_seq_len": 6,
+    "best_val_loss": 0.0016549326828680933
+  }
+}

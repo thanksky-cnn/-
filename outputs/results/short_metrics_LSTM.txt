@@ -1,0 +1,8 @@
+Model: LSTM
+RMSE: 0.308422 million km2
+MAE: 0.245853 million km2
+MAPE: 4.03%
+R2: 0.992210
+Params: 54,913
+Best Epoch: 78
+Train Time: 8.6s

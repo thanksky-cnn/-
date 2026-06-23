@@ -1,0 +1,19 @@
+========== Model Metrics ==========
+RMSE: 0.498894 million km2
+MAE: 0.399165 million km2
+MAPE: 6.43%
+R2: 0.979630
+
+========== Monthly RMSE ==========
+Month 1: 0.370697 million km2
+Month 2: 0.438816 million km2
+Month 3: 0.518483 million km2
+Month 4: 0.521531 million km2
+Month 5: 0.566398 million km2
+Month 6: 0.607738 million km2
+Month 7: 0.540393 million km2
+Month 8: 0.509792 million km2
+Month 9: 0.484656 million km2
+Month 10: 0.483304 million km2
+Month 11: 0.461450 million km2
+Month 12: 0.438719 million km2

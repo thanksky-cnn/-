@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+
+# Virtualenv
+venv/
+.venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Model checkpoints (large files)
+outputs/models/*.pth
+*.pth
+
+# Outputs (generated content)
+outputs/plots/
+outputs/summary/
+outputs/reports/
+
+# Data (large/copyrighted)
+data/raw/*.csv
+data/*.csv
+data/*.nc
+data/*.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Conda
+.pixi/
+
+# Optuna databases
+*.db
+optuna_results.csv
+
+# Experiments output
+experiments/
+
+# Logs
+*.log

@@ -1,0 +1,29 @@
+{
+  "1": {
+    "hidden_size": 128,
+    "num_layers": 1,
+    "dropout": 0.1,
+    "learning_rate": 0.0065440629146303044,
+    "batch_size": 16,
+    "weight_decay": 2.49118034913855e-06,
+    "best_val_loss": 0.000682292296551168
+  },
+  "6": {
+    "hidden_size": 256,
+    "num_layers": 1,
+    "dropout": 0.2,
+    "learning_rate": 0.0012706404640461676,
+    "batch_size": 8,
+    "weight_decay": 5.720479644418746e-05,
+    "best_val_loss": 0.0021046375105571416
+  },
+  "12": {
+    "hidden_size": 64,
+    "num_layers": 1,
+    "dropout": 0.2,
+    "learning_rate": 0.0035443868435521427,
+    "batch_size": 32,
+    "weight_decay": 8.27543376411127e-06,
+    "best_val_loss": 0.0023131370544433594
+  }
+}

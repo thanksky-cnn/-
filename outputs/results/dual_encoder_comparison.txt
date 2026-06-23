@@ -1,0 +1,26 @@
+Dual-Encoder LSTM vs Univariate LSTM
+Target: Sea Ice Area, Output Length: 12 months
+Data: 1979-2025 (SST masked pre-1981)
+Dual-encoder params: {'main_hidden': 128, 'aux_hidden': 32, 'dropout': 0.1, 'aux_dropout': 0.6, 'learning_rate': 0.0025617389922126033, 'batch_size': 8, 'weight_decay': 5.0021545363296385e-06, 'best_val_loss': 0.0018030385836027563}
+============================================================
+
+Metric             Univariate LSTM    Dual-Encoder LSTM  Diff      
+RMSE               0.5211             0.4974             -0.0237
+MAE                0.4100             0.3998             -0.0102
+MAPE               6.8349             6.4500             -0.3849
+R2                 0.9778             0.9798             +0.0020
+
+Monthly RMSE:
+Month    Univariate LSTM    Dual-Encoder LSTM  Diff      
+1        0.3544             0.3305             -0.0240
+2        0.4935             0.3949             -0.0986
+3        0.5640             0.4992             -0.0648
+4        0.5984             0.5092             -0.0893
+5        0.5852             0.5000             -0.0853
+6        0.5821             0.4920             -0.0901
+7        0.5811             0.5223             -0.0589
+8        0.5428             0.5607             +0.0179
+9        0.5079             0.5898             +0.0819
+10       0.4914             0.5715             +0.0801
+11       0.4652             0.5101             +0.0449
+12       0.4282             0.4257             -0.0026

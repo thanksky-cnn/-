@@ -1,0 +1,8 @@
+Model: SimpleRNN
+RMSE: 0.826878 million km2
+MAE: 0.708444 million km2
+MAPE: 11.61%
+R2: 0.944008
+Params: 4,353
+Best Epoch: 34
+Train Time: 2.7s

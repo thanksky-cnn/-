@@ -1,0 +1,8 @@
+Model: LinearRegression
+RMSE: 0.520599 million km2
+MAE: 0.427054 million km2
+MAPE: 6.91%
+R2: 0.977805
+Params: 13
+Best Epoch: 651
+Train Time: 16.9s
