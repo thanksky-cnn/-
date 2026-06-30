@@ -422,6 +422,199 @@ def create_dual_targets(df, input_len, output_len, aux_seq_len, target_column="a
     return y, years_out
 
 
+# ============================================================
+# v2: 通用双编码器数据加载器（支持N个辅助变量）
+# ============================================================
+
+def load_dual_encoder_data_v2(lagged_csv, aux_vars, target_column="area",
+                               start_year=None, end_year=None, aux_seq_len=6):
+    """
+    通用双编码器数据加载器 v2 — 支持任意辅助变量组合。
+
+    读取 data_build_lagged_v2.py 生成的 lagged_features_v2.csv，
+    按变量组独立归一化，构建X_main（12月冰）和X_aux（N通道辅助特征）。
+
+    Args:
+        lagged_csv: lagged_features_v2.csv 路径
+        aux_vars: 要使用的辅助变量名列表，e.g. ["ao", "sst"] 或 ["nao", "t2m"]
+        target_column: "area" 或 "extent"
+        start_year, end_year: 可选年过滤
+        aux_seq_len: aux encoder的上下文月数（默认6）
+
+    Returns:
+        X_main: (n_samples, 12, 1) — 海冰序列
+        X_aux:  (n_samples, aux_seq_len, N_channels) — 辅助特征
+        df:     DataFrame（用于年分割）
+        scaler_ice: MinMaxScaler
+        channel_names: list[str] — aux各通道名称
+        variable_config: dict — 变量组配置（供外部参考）
+    """
+    from sklearn.preprocessing import MinMaxScaler
+
+    df = pd.read_csv(lagged_csv)
+    print(f"Loaded lagged features v2: {len(df)} records ({df['year'].min()}-{df['year'].max()})")
+
+    # 年过滤
+    if start_year:
+        df = df[df['year'] >= start_year]
+    if end_year:
+        df = df[df['year'] <= end_year]
+
+    # --- 独立归一化 ---
+    # 1. 冰面积（始终独立归一化）
+    ice_values = df[target_column].values.reshape(-1, 1)
+    scaler_ice = MinMaxScaler(feature_range=(0, 1))
+    df['ice_scaled'] = scaler_ice.fit_transform(ice_values)
+
+    # 2. 辅助变量：按变量组独立归一化
+    # 变量组定义（与 data_build_lagged_v2.py 保持一致）
+    _VAR_GROUP_DEFS = {
+        "ao":     {"prefixes": ["ao"],     "has_mask": False, "lags": [1, 2]},
+        "sst":    {"prefixes": ["sst"],    "has_mask": True,  "lags": [1, 2]},
+        "nao":    {"prefixes": ["nao"],    "has_mask": False, "lags": [1, 2]},
+        "nino34": {"prefixes": ["nino34"], "has_mask": False, "lags": [1, 2]},
+        "pdo":    {"prefixes": ["pdo"],    "has_mask": False, "lags": [1, 2]},
+        "t2m":    {"prefixes": ["t2m"],    "has_mask": False, "lags": [1, 2]},
+        "slp":    {"prefixes": ["slp"],    "has_mask": False, "lags": [1, 2]},
+        "lag12_ice": {"prefixes": ["lag12_ice"], "has_mask": False, "lags": []},
+    }
+
+    aux_feature_arrays = []  # 收集各变量组的特征数组
+    channel_names = []       # 所有通道名称
+    variable_config = {}     # 实际使用的变量配置
+
+    for var_name in aux_vars:
+        if var_name not in _VAR_GROUP_DEFS:
+            print(f"  ⚠ 未知变量: {var_name}，跳过。已知: {list(_VAR_GROUP_DEFS.keys())}")
+            continue
+
+        group_def = _VAR_GROUP_DEFS[var_name]
+        has_mask = group_def["has_mask"]
+        lags = group_def["lags"]
+
+        # 确定CSV中实际存在的列
+        var_channels = []
+        for prefix in group_def["prefixes"]:
+            if prefix not in df.columns:
+                print(f"  ⚠ CSV中找不到列 '{prefix}'，跳过变量 {var_name}")
+                continue
+            var_channels.append(prefix)
+            # 添加滞后列
+            for lag in lags:
+                lag_col = f"{prefix}_lag{lag}"
+                if lag_col in df.columns:
+                    var_channels.append(lag_col)
+
+        # 添加掩码列
+        mask_col = None
+        if has_mask:
+            mask_candidates = [f"{var_name}_mask", "sst_mask"]
+            for mc in mask_candidates:
+                if mc in df.columns:
+                    mask_col = mc
+                    var_channels.append(mc)
+                    break
+
+        if not var_channels:
+            print(f"  ⚠ 变量 {var_name} 无可用列，跳过")
+            continue
+
+        # 独立归一化：对于has_mask的变量（如SST），仅对mask=1的值fit
+        values_2d = df[var_channels].values  # (N, n_ch)
+
+        if has_mask and mask_col and mask_col in df.columns:
+            # SST模式：仅在mask=1（有效SST）上fit scaler
+            mask = df[mask_col].values == 1
+            valid_values = values_2d[mask]
+            scaler = MinMaxScaler(feature_range=(0, 1))
+            if len(valid_values) > 0:
+                scaler.fit(valid_values)
+            # Transform全部（包括0占位符）
+            scaled = np.zeros_like(values_2d)
+            if len(valid_values) > 0:
+                scaled[mask] = scaler.transform(valid_values)
+        else:
+            # 普通模式：对所有值fit
+            scaler = MinMaxScaler(feature_range=(0, 1))
+            scaled = scaler.fit_transform(values_2d)
+
+        aux_feature_arrays.append(scaled)
+        channel_names.extend(var_channels)
+        variable_config[var_name] = {
+            "channels": var_channels,
+            "n_channels": len(var_channels),
+            "has_mask": has_mask,
+            "mask_col": mask_col,
+        }
+
+        print(f"  {var_name}: {len(var_channels)} channels ({', '.join(var_channels)})")
+        if has_mask and mask_col:
+            mask_sum = df[mask_col].sum() if mask_col in df.columns else 0
+            print(f"    mask={mask_col}, 有效记录={mask_sum}/{len(df)}")
+
+    # 拼接所有辅助特征
+    if not aux_feature_arrays:
+        raise ValueError("没有可用辅助变量！请检查 aux_vars 参数和CSV文件内容。")
+
+    aux_features = np.concatenate(aux_feature_arrays, axis=1)  # (N, total_channels)
+    total_channels = aux_features.shape[1]
+    print(f"\n总辅助通道: {total_channels} ({', '.join(channel_names)})")
+
+    # --- 构建序列 ---
+    area_data = df['ice_scaled'].values
+    n = len(area_data)
+    input_len = 12
+
+    X_main_list, X_aux_list = [], []
+    for i in range(n - input_len - aux_seq_len + 1):
+        # Main: 12个月冰
+        X_main_list.append(area_data[i:i + input_len])
+        # Aux: 最后aux_seq_len个月的所有辅助特征
+        X_aux_list.append(aux_features[i + input_len - aux_seq_len:i + input_len])
+
+    X_main = np.array(X_main_list).reshape(-1, input_len, 1)
+    X_aux = np.array(X_aux_list)  # (samples, aux_seq_len, total_channels)
+
+    print(f"双编码器序列 v2: {len(X_main)} samples")
+    print(f"  X_main: {X_main.shape}, X_aux: {X_aux.shape}")
+
+    return X_main, X_aux, df, scaler_ice, channel_names, variable_config
+
+
+def create_dual_targets_v2(df, input_len, output_len, aux_seq_len, target_column="area"):
+    """
+    v2双编码器目标创建（与v1相同逻辑，但接收通用df）。
+
+    Args:
+        df: 来自 load_dual_encoder_data_v2 的DataFrame
+        input_len: 输入长度（12）
+        output_len: 输出长度
+        aux_seq_len: aux上下文长度
+        target_column: 目标列名
+
+    Returns:
+        y: (n_samples, output_len) 目标序列
+        years_out: (n_samples,) 每年份
+        months_out: (n_samples, output_len) 每月份
+    """
+    area_data = df['ice_scaled'].values
+    years = df['year'].values
+    months = df['month'].values
+    n = len(area_data)
+    total_len = input_len + aux_seq_len
+
+    y_list, year_list, month_list = [], [], []
+    for i in range(n - total_len - output_len + 1):
+        y_list.append(area_data[i + input_len:i + input_len + output_len])
+        year_list.append(years[i + input_len])
+        month_list.append(months[i + input_len:i + input_len + output_len])
+
+    y = np.array(y_list)
+    years_out = np.array(year_list)
+    months_out = np.array(month_list)
+    return y, years_out, months_out
+
+
 # Test code
 if __name__ == "__main__":
     # 使用你的实际路径

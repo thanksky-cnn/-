@@ -22,6 +22,30 @@ class SeaIceDataset(Dataset):
         return self.X[idx], self.y[idx]
 
 
+class DualEncoderDataset(Dataset):
+    """双编码器数据集：返回 (x_main, x_aux, y) 三元组。
+
+    用于 SeaIceDualEncoderLSTM 的训练/验证/测试。
+    """
+
+    def __init__(self, X_main, X_aux, y):
+        """
+        Args:
+            X_main: (N, 12, 1) 海冰序列
+            X_aux:  (N, aux_seq_len, N_channels) 辅助特征
+            y:      (N, output_len) 目标
+        """
+        self.Xm = torch.tensor(X_main, dtype=torch.float32)
+        self.Xa = torch.tensor(X_aux, dtype=torch.float32)
+        self.y  = torch.tensor(y, dtype=torch.float32)
+
+    def __len__(self):
+        return len(self.Xm)
+
+    def __getitem__(self, idx):
+        return self.Xm[idx], self.Xa[idx], self.y[idx]
+
+
 # 测试代码
 if __name__ == "__main__":
     import numpy as np

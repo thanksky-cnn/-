@@ -23,6 +23,12 @@ PYTHONIOENCODING=utf-8 E:/anaconda/envs/pytorch/python.exe <script>.py
 | `gen_fig_lstm_loss.py` | 图3.1 | 单变量LSTM训练损失曲线 | (实时训练) |
 | `gen_loss_curves.py` | 图4.1 | E4 vs E7 训练损失曲线（含局部放大） | (实时训练) |
 | `gen_fig_loss_schemes.py` | 图3.5 | 短期+中期预测损失曲线 | (实时训练) |
+| `gen_data_overview.py` | 图2.1 | 数据概览（时间序列+季节循环+AO/SST） | 无 |
+| `gen_acf.py` | 图2.2 | 海冰面积自相关函数 | 无 |
+| `gen_scheme_comparison.py` | 图3.6 | 三种预测方案RMSE柱状对比 | CSV结果 |
+| `gen_ablation_e7.py` | 图4.6 | E7消融实验（四种设计独立贡献） | 需训练(5变体×5种子) |
+| `gen_uncertainty.py` | 图4.7 | 5-seed集成预测不确定性区间 | `best_model_de_s*.pth` |
+| `gen_residuals.py` | 图4.8 | 残差分析（QQ图+分布+逐月偏差） | `best_model_de.pth` |
 
 ## 绘图规范
 

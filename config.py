@@ -75,7 +75,17 @@ _active_scheme = _SCHEME_PARAMS.get(PREDICTION_SCHEME, _SCHEME_PARAMS["long"])
 for _key, _val in _active_scheme.items():
     globals()[_key] = _val
 
+# ==================== 多变量研究路径 (v2) ====================
+DATA_DIR_PATH = os.path.join(BASE_DIR, "data")
+LAGGED_CSV_V2 = os.path.join(DATA_DIR_PATH, "lagged_features_v2.csv")
+RESULTS_PHASE1_DIR = os.path.join(RESULTS_DIR, "phase1")
+RESULTS_PHASE2_DIR = os.path.join(RESULTS_DIR, "phase2")
+RESULTS_COND_DIR = os.path.join(RESULTS_DIR, "conditional_skill")
+
 # ==================== 创建输出目录 ====================
 os.makedirs(MODELS_DIR, exist_ok=True)
 os.makedirs(PLOTS_DIR, exist_ok=True)
 os.makedirs(RESULTS_DIR, exist_ok=True)
+os.makedirs(RESULTS_PHASE1_DIR, exist_ok=True)
+os.makedirs(RESULTS_PHASE2_DIR, exist_ok=True)
+os.makedirs(RESULTS_COND_DIR, exist_ok=True)

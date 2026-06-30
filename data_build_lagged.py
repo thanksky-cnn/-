@@ -1,4 +1,4 @@
-"""⭐ DATA: Build lagged AO/SST features (t, t-1, t-2) + SST mask for dual-encoder."""
+"""⭐ DATA: Build lagged AO/SST features (t, t-1, t-2) + SST mask for dual-encoder.
 
 For each (year, month):
   - ao, ao_lag1, ao_lag2:  current + 1-month + 2-month lagged AO
