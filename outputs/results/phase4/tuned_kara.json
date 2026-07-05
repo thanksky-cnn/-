@@ -1,0 +1,28 @@
+{
+  "region": "kara",
+  "desc": "Kara + PNA",
+  "aux_vars": [
+    "pna"
+  ],
+  "baseline_rmse": 0.117149,
+  "e7v1_rmse": 0.117487,
+  "tuned_rmse": 0.10551002006738773,
+  "delta_vs_baseline": -0.011638979932612273,
+  "delta_vs_e7v1": -0.011976979932612264,
+  "best_params": {
+    "aux_hidden": 48,
+    "aux_seq_len": 10,
+    "aux_dropout": 0.4,
+    "learning_rate": 0.009663417557819812,
+    "weight_decay": 7.44089026348983e-06
+  },
+  "best_val_loss": 0.017575614620000124,
+  "seed_rmses": [
+    0.10934373759388825,
+    0.10475982980750276,
+    0.10979234769913934,
+    0.111365159384102,
+    0.11284632501849247
+  ],
+  "verdict": "\u2705 \u8c03\u53c2\u540e\u6709\u5b9e\u8d28\u6539\u5584"
+}

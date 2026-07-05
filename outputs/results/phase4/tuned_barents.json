@@ -1,0 +1,28 @@
+{
+  "region": "barents",
+  "desc": "Barents + NAO",
+  "aux_vars": [
+    "nao"
+  ],
+  "baseline_rmse": 0.100027,
+  "e7v1_rmse": 0.098312,
+  "tuned_rmse": 0.09270249463028127,
+  "delta_vs_baseline": -0.007324505369718737,
+  "delta_vs_e7v1": -0.005609505369718729,
+  "best_params": {
+    "aux_hidden": 80,
+    "aux_seq_len": 4,
+    "aux_dropout": 0.1,
+    "learning_rate": 0.007025166339242158,
+    "weight_decay": 7.886714129990487e-05
+  },
+  "best_val_loss": 0.010646372567862272,
+  "seed_rmses": [
+    0.09969873384621034,
+    0.09873883611725923,
+    0.09758672600899881,
+    0.09602024773686718,
+    0.09292501925572716
+  ],
+  "verdict": "\u2705 \u8c03\u53c2\u540e\u6709\u5b9e\u8d28\u6539\u5584"
+}

@@ -1,7 +1,7 @@
 # run_phase1_single_variable.py
-# Phase 1: Single-variable incremental experiments
-# Each experiment adds ONE climate variable via dual-encoder.
-# 5-seed ensemble per experiment. Uniform hyperparameters from E7v1.
+# Phase 1: 单变量增量实验 (Single-variable Increment)
+# 度量每个气候指数独立加入双编码器辅编码器后的预测性能变化。
+# 5-seed ensemble per experiment. 统一超参数 (E7v1 Optuna 最优).
 import sys, os, json, time, argparse
 import numpy as np
 import torch, torch.nn as nn
@@ -20,8 +20,11 @@ from src.utils import set_seed, calculate_metrics
 
 LAGGED_CSV = os.path.join(config.BASE_DIR, "data", "lagged_features_v2.csv")
 RESULTS_DIR = os.path.join(config.OUTPUT_DIR, "results", "phase1")
+MODELS_DIR = os.path.join(config.OUTPUT_DIR, "models", "phase1")
 os.makedirs(RESULTS_DIR, exist_ok=True)
+os.makedirs(MODELS_DIR, exist_ok=True)
 
+# 统一超参数策略 (E7v1 Optuna 最优, 提纲1.3节)
 E7V1_HP = {
     "main_hidden": 256, "aux_hidden": 64, "aux_seq_len": 6,
     "num_layers": 1, "dropout": 0.1, "aux_dropout": 0.6,
@@ -32,22 +35,133 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 ol = config.OUTPUT_LEN; target = config.TARGET_COLUMN
 N_ENSEMBLE = 5
 
+# Phase 1 实验定义 (提纲 2.1):
+# E1=单变量基线, E7v1=已有最佳多变量, E14=AO, E8=NAO, E10=PNA, E9=Nino3.4
 EXPERIMENTS = {
-    "E8":  {"aux_vars": ["nao"],       "desc": "DE (ice + NAO)"},
-    "E9":  {"aux_vars": ["nino34"],    "desc": "DE (ice + Nino3.4)"},
-    "E10": {"aux_vars": ["pdo"],       "desc": "DE (ice + PDO)"},
-    "E11": {"aux_vars": ["t2m"],       "desc": "DE (ice + T2M)"},
-    "E12": {"aux_vars": ["slp"],       "desc": "DE (ice + SLP)"},
-    "E13": {"aux_vars": ["lag12_ice"], "desc": "DE (ice + Lag-12 ice)"},
-    "E14": {"aux_vars": ["ao"],        "desc": "DE (ice + AO only)"},
-    "E7v1_ref": {"aux_vars": ["ao", "sst"], "desc": "DE (ice + AO/SST) ref"},
+    "E1":   {"aux_vars": None,        "desc": "Univariate LSTM baseline"},
+    "E7v1": {"aux_vars": ["ao","sst"],"desc": "DE (AO + SST)"},
+    "E14":  {"aux_vars": ["ao"],      "desc": "DE (AO only)"},
+    "E8":   {"aux_vars": ["nao"],     "desc": "DE (NAO only)"},
+    "E10":  {"aux_vars": ["pna"],     "desc": "DE (PNA only)"},
+    "E9":   {"aux_vars": ["nino34"],  "desc": "DE (Nino3.4 only)"},
 }
 
 print(f"Device: {device}, Output len: {ol}, Target: {target}")
 
 
+# ============================================================
+# E1: 单变量基线 (SeaIceLSTM, 无辅助编码器)
+# ============================================================
+def run_e1_univariate(fast_mode=False):
+    """训练单变量LSTM基线 (12月冰面积 → 12月预测)。"""
+    n_seeds = 1 if fast_mode else N_ENSEMBLE
+    hp = E7V1_HP
+    exp_id = "E1"
+    print(f"\n{'='*60}")
+    print(f"  {exp_id}: {EXPERIMENTS[exp_id]['desc']}")
+    print(f"  Seeds: {n_seeds}")
+    print(f"{'='*60}")
+
+    # 加载冰数据 (使用 lagged_features_v2.csv 的 area 列)
+    import pandas as pd
+    from sklearn.preprocessing import MinMaxScaler
+    df = pd.read_csv(LAGGED_CSV)
+    area = df[target].values.reshape(-1, 1)
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    area_scaled = scaler.fit_transform(area).flatten()
+
+    X, y = create_sequences(area_scaled, input_len=12, output_len=ol)
+    # 年份数组需要与序列样本对齐：全数据564行 → 541个序列样本
+    seq_start = 12
+    seq_end = len(df) - ol + 1
+    years = df['year'].values[seq_start:seq_end]
+
+    tr_mask = (years >= 1979) & (years <= 2010)
+    v_mask  = (years >= 2011) & (years <= 2015)
+    te_mask = (years >= 2016) & (years <= 2025)
+
+    X_train, y_train = X[tr_mask], y[tr_mask]
+    X_val,   y_val   = X[v_mask],  y[v_mask]
+    X_test,  y_test  = X[te_mask], y[te_mask]
+
+    # 训练循环 (使用与双编码器一致的训练协议)
+    seeds = [42 + i * 10 for i in range(n_seeds)]
+    results = []
+    for seed in seeds:
+        set_seed(seed)
+        model = SeaIceLSTM(
+            input_size=1, hidden_size=hp["main_hidden"],
+            num_layers=hp["num_layers"], output_len=ol,
+            dropout=hp["dropout"],
+        ).to(device)
+
+        tr_ds = SeaIceDataset(X_train, y_train)
+        v_ds  = SeaIceDataset(X_val, y_val)
+        tr_ldr = DataLoader(tr_ds, batch_size=hp["batch_size"], shuffle=True)
+        v_ldr  = DataLoader(v_ds,  batch_size=hp["batch_size"])
+
+        criterion = nn.MSELoss()
+        optimizer = torch.optim.AdamW(
+            model.parameters(), lr=hp["learning_rate"],
+            weight_decay=hp["weight_decay"]
+        )
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer, mode="min", factor=0.7, patience=15
+        )
+
+        best_val, best_state, best_ep, patience = float("inf"), None, 0, 0
+        for epoch in range(1000):
+            model.train()
+            tr_loss = 0
+            for Xb, yb in tr_ldr:
+                Xb, yb = Xb.to(device), yb.to(device)
+                optimizer.zero_grad()
+                loss = criterion(model(Xb), yb)
+                loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+                optimizer.step()
+                tr_loss += loss.item()
+            tr_loss /= len(tr_ldr)
+
+            model.eval()
+            v_loss = 0
+            with torch.no_grad():
+                for Xb, yb in v_ldr:
+                    Xb, yb = Xb.to(device), yb.to(device)
+                    v_loss += criterion(model(Xb), yb).item()
+            v_loss /= len(v_ldr)
+            scheduler.step(v_loss)
+
+            if v_loss < best_val:
+                best_val = v_loss
+                best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+                best_ep = epoch + 1; patience = 0
+            else:
+                patience += 1
+            if patience >= 30:
+                break
+
+        model.load_state_dict(best_state)
+        model.eval()
+        with torch.no_grad():
+            y_pred_scaled = model(torch.tensor(X_test, dtype=torch.float32).to(device)).cpu().numpy()
+        y_pred = scaler.inverse_transform(y_pred_scaled.reshape(-1, 1)).reshape(-1, ol)
+        y_true = scaler.inverse_transform(y_test.reshape(-1, 1)).reshape(-1, ol)
+        metrics = calculate_metrics(y_true, y_pred)
+        print(f"  [{exp_id}] seed={seed}: RMSE={metrics['rmse']:.4f}, "
+              f"MAE={metrics['mae']:.4f}, best_ep={best_ep}")
+        results.append({"seed": seed, "best_epoch": best_ep,
+                        "y_pred": y_pred, "y_true": y_true, "metrics": metrics})
+
+    return _ensemble_and_save(exp_id, EXPERIMENTS[exp_id], results, n_seeds,
+                              None, years[te_mask])
+
+
+# ============================================================
+# 双编码器实验 (E7v1, E14, E8, E10, E9)
+# ============================================================
 def load_and_prepare_data(aux_vars):
-    """Load v2 data, build sequences, split by year. Returns train/val/test sets."""
+    """加载v2数据，构建序列，按年分割。"""
     X_main, X_aux, df, scaler_ice, ch_names, var_cfg = load_dual_encoder_data_v2(
         LAGGED_CSV, aux_vars=aux_vars, target_column=target,
         aux_seq_len=E7V1_HP["aux_seq_len"]
@@ -59,12 +173,10 @@ def load_and_prepare_data(aux_vars):
     X_main, X_aux, y, years = X_main[:n], X_aux[:n], y[:n], years[:n]
     months = months[:n]
 
-    # Year-based split
     tr_mask = (years >= 1979) & (years <= 2010)
     v_mask  = (years >= 2011) & (years <= 2015)
     te_mask = (years >= 2016) & (years <= 2025)
 
-    n_aux_ch = X_aux.shape[2]
     aux_seq = E7V1_HP["aux_seq_len"]
     return {
         "train": (X_main[tr_mask], X_aux[tr_mask][:, -aux_seq:, :], y[tr_mask]),
@@ -72,23 +184,20 @@ def load_and_prepare_data(aux_vars):
         "test":  (X_main[te_mask], X_aux[te_mask][:, -aux_seq:, :], y[te_mask]),
         "test_years": years[te_mask],
         "test_months": months[te_mask],
-    }, scaler_ice, n_aux_ch
+    }, scaler_ice, X_aux.shape[2]
 
 
 def run_single_seed(exp_id, aux_vars, data_dict, scaler_ice, n_aux_ch, seed):
-    """Train one seed of a dual-encoder experiment. Returns (model, preds, true, metrics)."""
+    """训练单个种子。"""
     set_seed(seed)
     hp = E7V1_HP.copy()
 
-    # Create datasets
     tr_ds = DualEncoderDataset(*data_dict["train"])
     v_ds  = DualEncoderDataset(*data_dict["val"])
-    te_ds = DualEncoderDataset(*data_dict["test"])
 
     tr_ldr = DataLoader(tr_ds, batch_size=hp["batch_size"], shuffle=True)
     v_ldr  = DataLoader(v_ds,  batch_size=hp["batch_size"])
 
-    # Build model
     model = SeaIceDualEncoderLSTM(
         input_size=1, main_hidden=hp["main_hidden"],
         aux_hidden=hp["aux_hidden"], aux_input_size=n_aux_ch,
@@ -98,13 +207,11 @@ def run_single_seed(exp_id, aux_vars, data_dict, scaler_ice, n_aux_ch, seed):
 
     print(f"  [{exp_id}] seed={seed}, params={count_parameters(model):,}, aux_ch={n_aux_ch}")
 
-    # Train
     train_losses, val_losses, best_state, best_epoch, train_time = train_dual_encoder(
         model, tr_ldr, v_ldr, hp, device,
         num_epochs=1000, early_stopping_patience=30, verbose=False
     )
 
-    # Predict
     y_pred = predict_dual_encoder(model, *data_dict["test"][:2], device, scaler_ice)
     y_true = scaler_ice.inverse_transform(
         data_dict["test"][2].reshape(-1, 1)
@@ -121,8 +228,43 @@ def run_single_seed(exp_id, aux_vars, data_dict, scaler_ice, n_aux_ch, seed):
     }
 
 
-def run_experiment(exp_id, cfg, fast_mode=False):
-    """Run one experiment with 5-seed ensemble (or 1-seed in fast mode)."""
+def _ensemble_and_save(exp_id, cfg, results, n_seeds, aux_vars, test_years):
+    """集成预测 + 保存结果。"""
+    all_preds = np.stack([r["y_pred"] for r in results], axis=0)
+    ensemble_pred = all_preds.mean(axis=0)
+    y_true = results[0]["y_true"]
+    ensemble_metrics = calculate_metrics(y_true, ensemble_pred)
+
+    seed_rmses = [r["metrics"]["rmse"] for r in results]
+    rmse_mean = np.mean(seed_rmses)
+    rmse_std = np.std(seed_rmses)
+
+    print(f"  {exp_id} seeds: RMSE={[f'{r:.4f}' for r in seed_rmses]}")
+    print(f"  {exp_id} ensemble: RMSE={ensemble_metrics['rmse']:.4f}, "
+          f"MAE={ensemble_metrics['mae']:.4f}")
+    print(f"  {exp_id} seed stats: mean={rmse_mean:.4f}, std={rmse_std:.4f}")
+
+    result = {
+        "exp_id": exp_id, "desc": cfg["desc"], "aux_vars": aux_vars,
+        "n_seeds": n_seeds,
+        "seed_rmses": [float(r) for r in seed_rmses],
+        "rmse_mean": float(rmse_mean), "rmse_std": float(rmse_std),
+        "ensemble_rmse": float(ensemble_metrics["rmse"]),
+        "ensemble_mae": float(ensemble_metrics["mae"]),
+        "ensemble_mape": float(ensemble_metrics.get("mape", 0)),
+    }
+    if test_years is not None:
+        result["test_years"] = test_years.tolist() if hasattr(test_years, 'tolist') else []
+
+    result_path = os.path.join(RESULTS_DIR, f"{exp_id}.json")
+    with open(result_path, "w") as f:
+        json.dump(result, f, indent=2)
+    print(f"  Saved: {result_path}")
+    return result
+
+
+def run_de_experiment(exp_id, cfg, fast_mode=False):
+    """运行一个双编码器实验。"""
     n_seeds = 1 if fast_mode else N_ENSEMBLE
     print(f"\n{'='*60}")
     print(f"  {exp_id}: {cfg['desc']}")
@@ -137,72 +279,30 @@ def run_experiment(exp_id, cfg, fast_mode=False):
         r = run_single_seed(exp_id, cfg["aux_vars"], data_dict, scaler_ice, n_aux_ch, seed)
         results.append(r)
 
-    # Ensemble
-    all_preds = np.stack([r["y_pred"] for r in results], axis=0)  # (n_seeds, N, ol)
-    ensemble_pred = all_preds.mean(axis=0)
-    y_true = results[0]["y_true"]
-    ensemble_metrics = calculate_metrics(y_true, ensemble_pred)
-
-    # Individual seed stats
-    seed_rmses = [r["metrics"]["rmse"] for r in results]
-    rmse_mean = np.mean(seed_rmses)
-    rmse_std = np.std(seed_rmses)
-
-    print(f"  {exp_id} seeds: RMSE={seed_rmses}")
-    print(f"  {exp_id} ensemble: RMSE={ensemble_metrics['rmse']:.4f}, "
-          f"MAE={ensemble_metrics['mae']:.4f}")
-    print(f"  {exp_id} seed stats: mean={rmse_mean:.4f}, std={rmse_std:.4f}")
-
-    # Save
-    result = {
-        "exp_id": exp_id, "desc": cfg["desc"], "aux_vars": cfg["aux_vars"],
-        "n_aux_ch": n_aux_ch, "n_seeds": n_seeds,
-        "seed_rmses": seed_rmses, "rmse_mean": rmse_mean, "rmse_std": rmse_std,
-        "ensemble_rmse": ensemble_metrics["rmse"],
-        "ensemble_mae": ensemble_metrics["mae"],
-        "ensemble_mape": ensemble_metrics.get("mape", None),
-        "test_years": data_dict["test_years"].tolist(),
-        "test_months": data_dict["test_months"].tolist() if hasattr(data_dict["test_months"], 'tolist') else [],
-    }
-    result_path = os.path.join(RESULTS_DIR, f"{exp_id}.json")
-    # Strip non-serializable fields
-    save_result = {k: v for k, v in result.items()
-                   if not k.startswith("y_")}
-    # Convert numpy arrays
-    for k in save_result:
-        if isinstance(save_result[k], np.ndarray):
-            save_result[k] = save_result[k].tolist()
-        elif isinstance(save_result[k], list) and save_result[k] and isinstance(save_result[k][0], np.floating):
-            save_result[k] = [float(x) for x in save_result[k]]
-    with open(result_path, "w") as f:
-        json.dump(save_result, f, indent=2)
-    print(f"  Saved: {result_path}")
-
-    return result
+    return _ensemble_and_save(exp_id, cfg, results, n_seeds, cfg["aux_vars"],
+                              data_dict["test_years"])
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Phase 1: Single-variable experiments")
+    parser = argparse.ArgumentParser(description="Phase 1: Single-variable increment experiments")
     parser.add_argument("--exp", type=str, default="all",
-                        help="Comma-separated experiment IDs (e.g., E8,E9)")
+                        help="Comma-separated experiment IDs (e.g., E1,E8,E10)")
     parser.add_argument("--fast", action="store_true",
-                        help="Fast mode: single seed, 100 epochs")
+                        help="Fast mode: single seed only")
     parser.add_argument("--list", action="store_true",
                         help="List all experiments and exit")
     args = parser.parse_args()
 
     if args.list:
         for eid, cfg in EXPERIMENTS.items():
-            print(f"  {eid}: {cfg['desc']} [{', '.join(cfg['aux_vars'])}]")
+            aux = cfg["aux_vars"] if cfg["aux_vars"] else "(none — univariate)"
+            print(f"  {eid}: {cfg['desc']} [{aux}]")
         return
 
     if args.exp == "all":
         to_run = list(EXPERIMENTS.keys())
     else:
         to_run = [e.strip() for e in args.exp.split(",")]
-        for e in to_run:
-            if e not in EXPERIMENTS:
-                print(f"Unknown experiment: {e}, skipping")
 
     print(f"Running {len(to_run)} experiments: {to_run}")
     if args.fast:
@@ -211,27 +311,43 @@ def main():
     all_results = {}
     for exp_id in to_run:
         if exp_id not in EXPERIMENTS:
+            print(f"Unknown experiment: {exp_id}, skipping")
             continue
-        r = run_experiment(exp_id, EXPERIMENTS[exp_id], fast_mode=args.fast)
-        all_results[exp_id] = {
-            "desc": r["desc"], "rmse_mean": r["rmse_mean"],
-            "rmse_std": r["rmse_std"], "ensemble_rmse": r["ensemble_rmse"],
-        }
+        cfg = EXPERIMENTS[exp_id]
+
+        if exp_id == "E1":
+            r = run_e1_univariate(fast_mode=args.fast)
+        else:
+            r = run_de_experiment(exp_id, cfg, fast_mode=args.fast)
+        all_results[exp_id] = r
 
     # Summary table
     print(f"\n{'='*70}")
     print("  Phase 1 Results Summary")
     print(f"{'='*70}")
-    print(f"  {'Exp':<10s} {'Description':<35s} {'RMSE':>8s} {'Std':>8s}")
-    print(f"  {'-'*60}")
-    for eid, r in all_results.items():
-        print(f"  {eid:<10s} {r['desc']:<35s} {r['rmse_mean']:8.4f} {r['rmse_std']:8.4f}")
+    print(f"  {'Exp':<8s} {'Description':<30s} {'EnsRMSE':>8s} {'SeedMean':>8s} {'SeedStd':>8s}")
+    print(f"  {'-'*65}")
+    baseline_rmse = all_results.get("E1", {}).get("ensemble_rmse", None)
+    for eid in EXPERIMENTS:
+        if eid not in all_results:
+            continue
+        r = all_results[eid]
+        delta = ""
+        if baseline_rmse and eid != "E1":
+            d = r["ensemble_rmse"] - baseline_rmse
+            delta = f" {d:+.4f}"
+        print(f"  {eid:<8s} {r['desc']:<30s} {r['ensemble_rmse']:8.4f} "
+              f"{r['rmse_mean']:8.4f} {r['rmse_std']:8.4f}{delta}")
+
     print(f"  {'='*70}")
 
     # Save summary
+    summary = {eid: {"desc": r["desc"], "ensemble_rmse": r["ensemble_rmse"],
+                     "rmse_mean": r["rmse_mean"], "rmse_std": r["rmse_std"]}
+               for eid, r in all_results.items()}
     summary_path = os.path.join(RESULTS_DIR, "phase1_summary.json")
     with open(summary_path, "w") as f:
-        json.dump(all_results, f, indent=2)
+        json.dump(summary, f, indent=2)
     print(f"Summary saved: {summary_path}")
 
 

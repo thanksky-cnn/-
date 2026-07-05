@@ -1,0 +1,74 @@
+{
+  "E29": {
+    "desc": "Chukchi Sea baseline",
+    "region": "chukchi",
+    "ensemble_rmse": 0.08029082185387725,
+    "rmse_mean": 0.08079649521659994
+  },
+  "E29a": {
+    "desc": "Chukchi + PNA (matched)",
+    "region": "chukchi",
+    "ensemble_rmse": 0.08067111674162589,
+    "rmse_mean": 0.08128309184610862
+  },
+  "E29b": {
+    "desc": "Chukchi + NAO (mismatched)",
+    "region": "chukchi",
+    "ensemble_rmse": 0.081515464097804,
+    "rmse_mean": 0.0822317437300957
+  },
+  "E30": {
+    "desc": "Kara Sea baseline",
+    "region": "kara",
+    "ensemble_rmse": 0.1171494766733796,
+    "rmse_mean": 0.12033734891246786
+  },
+  "E30a": {
+    "desc": "Kara + NAO (matched)",
+    "region": "kara",
+    "ensemble_rmse": 0.11877151446440684,
+    "rmse_mean": 0.12117032678049751
+  },
+  "E30b": {
+    "desc": "Kara + PNA (mismatched)",
+    "region": "kara",
+    "ensemble_rmse": 0.11748675160926988,
+    "rmse_mean": 0.12027624009316111
+  },
+  "E31": {
+    "desc": "Laptev Sea baseline",
+    "region": "laptev",
+    "ensemble_rmse": 0.11574400353134714,
+    "rmse_mean": 0.11839706670651631
+  },
+  "E31a": {
+    "desc": "Laptev + NAO (matched)",
+    "region": "laptev",
+    "ensemble_rmse": 0.11623948461584319,
+    "rmse_mean": 0.11827824358971797
+  },
+  "E31b": {
+    "desc": "Laptev + PNA (mismatched)",
+    "region": "laptev",
+    "ensemble_rmse": 0.1147475992040691,
+    "rmse_mean": 0.1167708751011602
+  },
+  "E32": {
+    "desc": "Greenland Sea baseline",
+    "region": "greenland",
+    "ensemble_rmse": 0.07088129636608541,
+    "rmse_mean": 0.07140564620110006
+  },
+  "E32a": {
+    "desc": "Greenland + NAO (matched)",
+    "region": "greenland",
+    "ensemble_rmse": 0.07205070496198994,
+    "rmse_mean": 0.07279799224197635
+  },
+  "E32b": {
+    "desc": "Greenland + PNA (mismatched)",
+    "region": "greenland",
+    "ensemble_rmse": 0.07199807457303424,
+    "rmse_mean": 0.07283270701534932
+  }
+}

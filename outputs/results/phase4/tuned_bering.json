@@ -1,0 +1,28 @@
+{
+  "region": "bering",
+  "desc": "Bering + NAO",
+  "aux_vars": [
+    "nao"
+  ],
+  "baseline_rmse": 0.101373,
+  "e7v1_rmse": 0.099568,
+  "tuned_rmse": 0.09264436566813353,
+  "delta_vs_baseline": -0.008728634331866478,
+  "delta_vs_e7v1": -0.006923634331866477,
+  "best_params": {
+    "aux_hidden": 48,
+    "aux_seq_len": 10,
+    "aux_dropout": 0.8,
+    "learning_rate": 0.0035575059673040323,
+    "weight_decay": 7.775669130499972e-06
+  },
+  "best_val_loss": 0.011600096710026264,
+  "seed_rmses": [
+    0.09377109544191757,
+    0.10339726226913962,
+    0.09597520072232484,
+    0.09581656259611625,
+    0.08890573625472807
+  ],
+  "verdict": "\u2705 \u8c03\u53c2\u540e\u6709\u5b9e\u8d28\u6539\u5584"
+}

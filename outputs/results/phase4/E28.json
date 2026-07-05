@@ -1,0 +1,19 @@
+{
+  "exp_id": "E28",
+  "desc": "Central Arctic baseline",
+  "region": "central_arctic",
+  "aux_vars": null,
+  "n_aux_ch": 1,
+  "n_seeds": 5,
+  "seed_rmses": [
+    0.14597453231121746,
+    0.1425913628129986,
+    0.14521686895763172,
+    0.14481260478824087,
+    0.14581714779805294
+  ],
+  "rmse_mean": 0.14488250333362834,
+  "rmse_std": 0.00121918814177368,
+  "ensemble_rmse": 0.1435471084685152,
+  "ensemble_mae": 0.10789256082642647
+}

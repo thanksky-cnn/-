@@ -1,0 +1,100 @@
+{
+  "bering": {
+    "desc": "Bering + NAO",
+    "baseline_rmse": 0.101373,
+    "tuned_rmse": 0.09264436566813353,
+    "delta_vs_baseline": -0.008728634331866478,
+    "verdict": "\u2705 \u8c03\u53c2\u540e\u6709\u5b9e\u8d28\u6539\u5584",
+    "best_params": {
+      "aux_hidden": 48,
+      "aux_seq_len": 10,
+      "aux_dropout": 0.8,
+      "learning_rate": 0.0035575059673040323,
+      "weight_decay": 7.775669130499972e-06
+    }
+  },
+  "chukchi": {
+    "desc": "Chukchi + PNA",
+    "baseline_rmse": 0.080291,
+    "tuned_rmse": 0.0799337636700154,
+    "delta_vs_baseline": -0.00035723632998460597,
+    "verdict": "\u2248 \u8c03\u53c2\u540e\u63a5\u8fd1\u57fa\u7ebf\uff0c\u6c14\u5019\u6307\u6570\u65e0\u589e\u91cf",
+    "best_params": {
+      "aux_hidden": 64,
+      "aux_seq_len": 10,
+      "aux_dropout": 0.8,
+      "learning_rate": 0.004238713774849773,
+      "weight_decay": 2.818569649058303e-05
+    }
+  },
+  "barents": {
+    "desc": "Barents + NAO",
+    "baseline_rmse": 0.100027,
+    "tuned_rmse": 0.09270249463028127,
+    "delta_vs_baseline": -0.007324505369718737,
+    "verdict": "\u2705 \u8c03\u53c2\u540e\u6709\u5b9e\u8d28\u6539\u5584",
+    "best_params": {
+      "aux_hidden": 80,
+      "aux_seq_len": 4,
+      "aux_dropout": 0.1,
+      "learning_rate": 0.007025166339242158,
+      "weight_decay": 7.886714129990487e-05
+    }
+  },
+  "kara": {
+    "desc": "Kara + PNA",
+    "baseline_rmse": 0.117149,
+    "tuned_rmse": 0.10551002006738773,
+    "delta_vs_baseline": -0.011638979932612273,
+    "verdict": "\u2705 \u8c03\u53c2\u540e\u6709\u5b9e\u8d28\u6539\u5584",
+    "best_params": {
+      "aux_hidden": 48,
+      "aux_seq_len": 10,
+      "aux_dropout": 0.4,
+      "learning_rate": 0.009663417557819812,
+      "weight_decay": 7.44089026348983e-06
+    }
+  },
+  "laptev": {
+    "desc": "Laptev + PNA",
+    "baseline_rmse": 0.115744,
+    "tuned_rmse": 0.11906686004112524,
+    "delta_vs_baseline": 0.003322860041125239,
+    "verdict": "\u2717 \u8c03\u53c2\u540e\u4ecd\u52a3\u4e8e\u57fa\u7ebf",
+    "best_params": {
+      "aux_hidden": 64,
+      "aux_seq_len": 8,
+      "aux_dropout": 0.30000000000000004,
+      "learning_rate": 0.0027815072635308086,
+      "weight_decay": 1.0240066556246446e-05
+    }
+  },
+  "greenland": {
+    "desc": "Greenland + PNA",
+    "baseline_rmse": 0.070881,
+    "tuned_rmse": 0.06946317398291178,
+    "delta_vs_baseline": -0.0014178260170882168,
+    "verdict": "\u2705 \u8c03\u53c2\u540e\u6709\u5b9e\u8d28\u6539\u5584",
+    "best_params": {
+      "aux_hidden": 112,
+      "aux_seq_len": 4,
+      "aux_dropout": 0.1,
+      "learning_rate": 0.0011290133559092666,
+      "weight_decay": 2.0914981329035586e-06
+    }
+  },
+  "central_arctic": {
+    "desc": "Central Arctic + AO",
+    "baseline_rmse": 0.143547,
+    "tuned_rmse": 0.14263428543277848,
+    "delta_vs_baseline": -0.0009127145672215287,
+    "verdict": "\u2248 \u8c03\u53c2\u540e\u63a5\u8fd1\u57fa\u7ebf\uff0c\u6c14\u5019\u6307\u6570\u65e0\u589e\u91cf",
+    "best_params": {
+      "aux_hidden": 128,
+      "aux_seq_len": 8,
+      "aux_dropout": 0.30000000000000004,
+      "learning_rate": 0.0025595516007048983,
+      "weight_decay": 1.0240066556246446e-05
+    }
+  }
+}

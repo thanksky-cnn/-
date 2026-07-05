@@ -1,0 +1,28 @@
+{
+  "region": "chukchi",
+  "desc": "Chukchi + PNA",
+  "aux_vars": [
+    "pna"
+  ],
+  "baseline_rmse": 0.080291,
+  "e7v1_rmse": 0.080671,
+  "tuned_rmse": 0.0799337636700154,
+  "delta_vs_baseline": -0.00035723632998460597,
+  "delta_vs_e7v1": -0.0007372363299846113,
+  "best_params": {
+    "aux_hidden": 64,
+    "aux_seq_len": 10,
+    "aux_dropout": 0.8,
+    "learning_rate": 0.004238713774849773,
+    "weight_decay": 2.818569649058303e-05
+  },
+  "best_val_loss": 0.004446341190487146,
+  "seed_rmses": [
+    0.0791538761264886,
+    0.0804693062091232,
+    0.08324840080488101,
+    0.0815193888358507,
+    0.0817843509813909
+  ],
+  "verdict": "\u2248 \u8c03\u53c2\u540e\u63a5\u8fd1\u57fa\u7ebf\uff0c\u6c14\u5019\u6307\u6570\u65e0\u589e\u91cf"
+}

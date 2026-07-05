@@ -1,0 +1,38 @@
+{
+  "E1": {
+    "desc": "Univariate LSTM baseline",
+    "ensemble_rmse": 0.5235663753942267,
+    "rmse_mean": 0.5318924932893279,
+    "rmse_std": 0.011455489746048972
+  },
+  "E7v1": {
+    "desc": "DE (AO + SST)",
+    "ensemble_rmse": 0.5420352385684412,
+    "rmse_mean": 0.5511642107323379,
+    "rmse_std": 0.02152974367509006
+  },
+  "E14": {
+    "desc": "DE (AO only)",
+    "ensemble_rmse": 0.5130126270911122,
+    "rmse_mean": 0.5279764495245416,
+    "rmse_std": 0.015487802991919764
+  },
+  "E8": {
+    "desc": "DE (NAO only)",
+    "ensemble_rmse": 0.5192096762744243,
+    "rmse_mean": 0.5315081669999182,
+    "rmse_std": 0.01474819512370444
+  },
+  "E10": {
+    "desc": "DE (PNA only)",
+    "ensemble_rmse": 0.5088929198635924,
+    "rmse_mean": 0.525223588383662,
+    "rmse_std": 0.014929147300542721
+  },
+  "E9": {
+    "desc": "DE (Nino3.4 only)",
+    "ensemble_rmse": 0.5180324340294785,
+    "rmse_mean": 0.5256314999269738,
+    "rmse_std": 0.015437135430605485
+  }
+}

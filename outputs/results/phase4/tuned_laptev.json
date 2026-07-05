@@ -1,0 +1,28 @@
+{
+  "region": "laptev",
+  "desc": "Laptev + PNA",
+  "aux_vars": [
+    "pna"
+  ],
+  "baseline_rmse": 0.115744,
+  "e7v1_rmse": 0.114748,
+  "tuned_rmse": 0.11906686004112524,
+  "delta_vs_baseline": 0.003322860041125239,
+  "delta_vs_e7v1": 0.004318860041125236,
+  "best_params": {
+    "aux_hidden": 64,
+    "aux_seq_len": 8,
+    "aux_dropout": 0.30000000000000004,
+    "learning_rate": 0.0027815072635308086,
+    "weight_decay": 1.0240066556246446e-05
+  },
+  "best_val_loss": 0.015044527594000101,
+  "seed_rmses": [
+    0.11908098669958644,
+    0.12223238699167828,
+    0.12760369135177063,
+    0.12135973257838385,
+    0.12290373923367999
+  ],
+  "verdict": "\u2717 \u8c03\u53c2\u540e\u4ecd\u52a3\u4e8e\u57fa\u7ebf"
+}

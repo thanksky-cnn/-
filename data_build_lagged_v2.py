@@ -64,7 +64,14 @@ VARIABLE_GROUPS = {
     "nino34": {
         "csv": "data/nino34_monthly.csv",
         "cols": ["nino34"],
-        "has_mask": False,
+        "has_mask": True,   # SSTOI starts 1982, missing 1979-1981
+        "n_lags": 2,
+        "lag_only": False,
+    },
+    "pna": {
+        "csv": "data/pna_monthly.csv",
+        "cols": ["pna"],
+        "has_mask": False,  # PNA从1950年开始，覆盖全冰数据期
         "n_lags": 2,
         "lag_only": False,
     },

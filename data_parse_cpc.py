@@ -51,6 +51,12 @@ CPC_INDICES = {
         "column": "nino34",
         "description": "Nino 3.4 ENSO Index",
     },
+    "pna": {
+        "input": "NOAA_CPC_PNA_monthly.txt",
+        "output": "pna_monthly.csv",
+        "column": "pna",
+        "description": "Pacific North American Index",
+    },
     "pdo": {
         "input": "NOAA_NCEI_PDO_monthly.txt",
         "output": "pdo_monthly.csv",
@@ -61,15 +67,15 @@ CPC_INDICES = {
 
 
 def parse_cpc_text(input_path, output_path, column_name, description=""):
-    """通用CPC文本解析：年行 + 12月空格分隔值 → (year, month, value) CSV.
+    """通用文本解析：自动检测CPC格式（12月宽表或年月值长表）。
 
-    CPC标准格式：
-      Line 1: 月份缩写表头 (可跳过)
-      Line 2+: <year> <Jan> <Feb> ... <Dec> (空格分隔，至少13个token)
-    最后一行可能不足12个月（当年未完成）→ 跳过
+    支持三种格式：
+      A) CPC标准宽表: <year> <Jan> ... <Dec> (≥13个token) → 展开为12行
+      B) 年月值长表:   <year> <month> <value> (3个token)
+      C) 年值格式:      <year> <value> (2个token, 无月份)
 
     Args:
-        input_path: CPC文本文件路径
+        input_path: 文本文件路径
         output_path: 输出CSV路径
         column_name: CSV中的列名 (e.g., "ao", "nao")
         description: 变量描述（仅用于日志）
@@ -79,33 +85,91 @@ def parse_cpc_text(input_path, output_path, column_name, description=""):
         print(f"  请从NOAA CPC下载数据后重试。")
         return
 
-    records = []
     with open(input_path, "r") as f:
         lines = f.readlines()
 
-    for line in lines[1:]:  # 跳过表头行
+    # Auto-detect format from first non-header data line
+    data_lines = []
+    for line in lines:
         line = line.strip()
         if not line:
             continue
         parts = line.split()
-        if len(parts) < 13:  # 不完整的最后一年（当年未结束）
-            continue
+        # Skip header lines (contain month names or non-numeric)
         try:
-            year = int(parts[0])
+            float(parts[0])
+            data_lines.append(parts)
         except ValueError:
-            continue  # 跳过非数据行
-        for month_idx in range(1, 13):
+            continue
+
+    if not data_lines:
+        print(f"⚠ 未找到数据行: {input_path}")
+        return
+
+    n_cols = len(data_lines[0])
+    records = []
+
+    if n_cols >= 13:
+        # Format A: CPC wide table (year + 12 months)
+        fmt = "CPC宽表(年+12月)"
+        for parts in data_lines:
             try:
-                value = float(parts[month_idx])
+                year = int(parts[0])
+            except ValueError:
+                continue
+            for month_idx in range(1, 13):
+                if month_idx < len(parts):
+                    try:
+                        value = float(parts[month_idx])
+                        records.append({"year": year, "month": month_idx,
+                                       column_name: value})
+                    except ValueError:
+                        continue
+
+    elif n_cols == 3:
+        # Format B: year, month, value
+        fmt = "年月值长表"
+        for parts in data_lines:
+            try:
+                year = int(parts[0])
+                month = int(parts[1])
+                value = float(parts[2])
+                records.append({"year": year, "month": month, column_name: value})
             except (ValueError, IndexError):
                 continue
-            records.append({"year": year, "month": month_idx, column_name: value})
+
+    elif n_cols == 2:
+        # Format C: year, value (annual data)
+        fmt = "年值格式"
+        for parts in data_lines:
+            try:
+                year = int(parts[0])
+                value = float(parts[1])
+                records.append({"year": year, "month": 1, column_name: value})
+            except (ValueError, IndexError):
+                continue
+
+    else:
+        # Unknown format — try best-effort
+        fmt = f"未知({n_cols}列)"
+        for parts in data_lines:
+            try:
+                if len(parts) >= 3:
+                    year = int(parts[0])
+                    month = int(parts[1])
+                    value = float(parts[2])
+                    records.append({"year": year, "month": month, column_name: value})
+            except (ValueError, IndexError):
+                continue
 
     df = pd.DataFrame(records)
+    if df.empty:
+        print(f"⚠ 未能解析任何数据: {input_path}")
+        return
     df = df.sort_values(["year", "month"]).reset_index(drop=True)
     df.to_csv(output_path, index=False)
     print(f"✅ {description} ({column_name}): {len(df)} records "
-          f"({df['year'].min()}-{df['year'].max()}) → {output_path}")
+          f"({df['year'].min()}-{df['year'].max()}) [{fmt}] → {output_path}")
 
 
 def parse_sstoi_format(input_path, output_path, column_name="nino34", description=""):

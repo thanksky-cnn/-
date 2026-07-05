@@ -1,0 +1,28 @@
+{
+  "region": "central_arctic",
+  "desc": "Central Arctic + AO",
+  "aux_vars": [
+    "ao"
+  ],
+  "baseline_rmse": 0.143547,
+  "e7v1_rmse": 0.143515,
+  "tuned_rmse": 0.14263428543277848,
+  "delta_vs_baseline": -0.0009127145672215287,
+  "delta_vs_e7v1": -0.0008807145672215244,
+  "best_params": {
+    "aux_hidden": 128,
+    "aux_seq_len": 8,
+    "aux_dropout": 0.30000000000000004,
+    "learning_rate": 0.0025595516007048983,
+    "weight_decay": 1.0240066556246446e-05
+  },
+  "best_val_loss": 0.0054662711918354034,
+  "seed_rmses": [
+    0.14582227644235726,
+    0.1449068753917559,
+    0.14576424522201992,
+    0.14211403777887682,
+    0.1455261992355786
+  ],
+  "verdict": "\u2248 \u8c03\u53c2\u540e\u63a5\u8fd1\u57fa\u7ebf\uff0c\u6c14\u5019\u6307\u6570\u65e0\u589e\u91cf"
+}

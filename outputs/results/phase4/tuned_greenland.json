@@ -1,0 +1,28 @@
+{
+  "region": "greenland",
+  "desc": "Greenland + PNA",
+  "aux_vars": [
+    "pna"
+  ],
+  "baseline_rmse": 0.070881,
+  "e7v1_rmse": 0.071998,
+  "tuned_rmse": 0.06946317398291178,
+  "delta_vs_baseline": -0.0014178260170882168,
+  "delta_vs_e7v1": -0.0025348260170882236,
+  "best_params": {
+    "aux_hidden": 112,
+    "aux_seq_len": 4,
+    "aux_dropout": 0.1,
+    "learning_rate": 0.0011290133559092666,
+    "weight_decay": 2.0914981329035586e-06
+  },
+  "best_val_loss": 0.0044829456601291895,
+  "seed_rmses": [
+    0.0710784130174622,
+    0.0692424691852616,
+    0.07008464244576798,
+    0.0715473724210322,
+    0.07036470074503227
+  ],
+  "verdict": "\u2705 \u8c03\u53c2\u540e\u6709\u5b9e\u8d28\u6539\u5584"
+}
