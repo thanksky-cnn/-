@@ -13,6 +13,8 @@ import sys, os, numpy as np, pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import config
+import nature_figure_config  # nature-figure: 600 DPI + Arial + clean spines
+
 
 OUT_DIR = os.path.join(config.BASE_DIR, "outputs", "plots", "paper")
 os.makedirs(OUT_DIR, exist_ok=True)
@@ -101,6 +103,6 @@ ax3.text(0.02, 0.97, "(c)", transform=ax3.transAxes, fontsize=14, fontweight="bo
 
 plt.tight_layout()
 out_path = os.path.join(OUT_DIR, "fig_data_overview.png")
-fig.savefig(out_path, dpi=200, bbox_inches="tight")
+fig.savefig(out_path, dpi=600, bbox_inches="tight")
 plt.close()
 print(f"Saved: {out_path}")

@@ -22,6 +22,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
+import nature_figure_config  # nature-figure: 600 DPI + Arial + clean spines
+
 
 fm.fontManager.addfont("C:/Windows/Fonts/simhei.ttf")
 plt.rcParams["font.sans-serif"] = ["SimHei"]
@@ -109,7 +111,7 @@ def main():
 
     plt.tight_layout()
     save_path = os.path.join(OUT, "fig_lstm_short_seasonal_mean_std.png")
-    plt.savefig(save_path, dpi=200, bbox_inches='tight')
+    plt.savefig(save_path, dpi=600, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
 

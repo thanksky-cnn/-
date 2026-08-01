@@ -23,6 +23,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
+import nature_figure_config  # nature-figure: 600 DPI + Arial + clean spines
+
 
 fm.fontManager.addfont("C:/Windows/Fonts/simhei.ttf")
 plt.rcParams["font.sans-serif"] = ["SimHei"]
@@ -295,7 +297,7 @@ def plot_loss_curves(tri_tl, tri_vl, tri_be, de_tl, de_vl, de_be, save_path):
             fontweight='bold', va='top', ha='left')
     _add_zoom_inset(ax, de_tl, de_vl, de_be, '#2166ac', '#d73027', zoom_start)
     plt.tight_layout()
-    plt.savefig(save_path, dpi=200, bbox_inches='tight')
+    plt.savefig(save_path, dpi=600, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
 
@@ -368,7 +370,7 @@ def plot_loss_curves(tri_tl, tri_vl, tri_be, de_tl, de_vl, de_be, save_path):
     axins.grid(True, alpha=0.2)
     plt.tight_layout()
     combined_path = save_path.replace('.png', '_combined.png')
-    plt.savefig(combined_path, dpi=200, bbox_inches='tight')
+    plt.savefig(combined_path, dpi=600, bbox_inches='tight')
     plt.close()
     print(f"Saved: {combined_path}")
 

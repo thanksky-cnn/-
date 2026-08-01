@@ -13,6 +13,8 @@ plt.rcParams["axes.unicode_minus"] = False
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
+import nature_figure_config  # nature-figure: 600 DPI + Arial + clean spines
+
 
 OUTPUT_DIR = os.path.join(config.OUTPUT_DIR, "plots", "paper")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -106,7 +108,7 @@ def plot_bestworst(y_true, y_pred_a, y_pred_b, test_years, test_months, save_pat
                  fontweight='bold', va='top')
 
     plt.tight_layout()
-    fig.savefig(save_path, dpi=200, bbox_inches='tight')
+    fig.savefig(save_path, dpi=600, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
 

@@ -13,6 +13,8 @@ import sys, os, numpy as np, pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import config
+import nature_figure_config  # nature-figure: 600 DPI + Arial + clean spines
+
 
 OUT_DIR = os.path.join(config.BASE_DIR, "outputs", "plots", "paper")
 os.makedirs(OUT_DIR, exist_ok=True)
@@ -65,7 +67,7 @@ ax.grid(True, alpha=0.3)
 
 plt.tight_layout()
 out_path = os.path.join(OUT_DIR, "fig_acf.png")
-fig.savefig(out_path, dpi=200, bbox_inches="tight")
+fig.savefig(out_path, dpi=600, bbox_inches="tight")
 plt.close()
 print(f"Saved: {out_path}")
 print(f"lag-12 ACF: {acf_vals[12]:.4f}")

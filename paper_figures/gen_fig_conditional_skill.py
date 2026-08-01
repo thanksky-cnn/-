@@ -13,6 +13,8 @@ plt.rcParams["axes.unicode_minus"] = False
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
+import nature_figure_config  # nature-figure: 600 DPI + Arial + clean spines
+
 
 OUTPUT_DIR = os.path.join(config.OUTPUT_DIR, "plots", "paper")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -66,7 +68,7 @@ def plot_monthly_rmse(data, save_path):
     ax.text(0.03, 0.97, '(a)', transform=ax.transAxes, fontsize=16, fontweight='bold', va='top')
 
     plt.tight_layout()
-    fig.savefig(save_path, dpi=200, bbox_inches='tight')
+    fig.savefig(save_path, dpi=600, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
 
@@ -102,7 +104,7 @@ def plot_leadtime_skill(data, save_path):
     ax.text(0.03, 0.97, '(b)', transform=ax.transAxes, fontsize=16, fontweight='bold', va='top')
 
     plt.tight_layout()
-    fig.savefig(save_path, dpi=200, bbox_inches='tight')
+    fig.savefig(save_path, dpi=600, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
 
@@ -140,7 +142,7 @@ def plot_bootstrap_forest(data, save_path):
     ax.grid(axis='x', alpha=0.3)
 
     plt.tight_layout()
-    fig.savefig(save_path, dpi=200, bbox_inches='tight')
+    fig.savefig(save_path, dpi=600, bbox_inches='tight')
     plt.close()
     print(f"Saved: {save_path}")
 

@@ -14,6 +14,8 @@ import sys, os, json, numpy as np, pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import config
+import nature_figure_config  # nature-figure: 600 DPI + Arial + clean spines
+
 
 OUT_DIR = os.path.join(config.BASE_DIR, "outputs", "plots", "paper")
 RESULTS_DIR = config.RESULTS_DIR
@@ -111,6 +113,6 @@ ax2.text(0.03, 0.97, "(b)", transform=ax2.transAxes, fontsize=14, fontweight="bo
 
 plt.tight_layout()
 out_path = os.path.join(OUT_DIR, "fig_scheme_comparison.png")
-fig.savefig(out_path, dpi=200, bbox_inches="tight")
+fig.savefig(out_path, dpi=600, bbox_inches="tight")
 plt.close()
 print(f"Saved: {out_path}")

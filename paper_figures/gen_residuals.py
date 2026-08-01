@@ -112,6 +112,8 @@ ax2.legend(fontsize=8)
 ax2.text(0.03, 0.97, '(b)', transform=ax2.transAxes, fontsize=14, fontweight='bold', va='top')
 # Stats annotation
 from scipy.stats import skew, kurtosis
+import nature_figure_config  # nature-figure: 600 DPI + Arial + clean spines
+
 sk = skew(residuals); ku = kurtosis(residuals)
 ax2.text(0.95, 0.95, '偏度: {:.3f}\n峰度: {:.3f}\nStd: {:.3f}'.format(sk, ku, np.std(residuals)),
          transform=ax2.transAxes, fontsize=8, ha='right', va='top',
@@ -137,7 +139,7 @@ ax3.grid(True, alpha=0.3, axis='y')
 
 plt.tight_layout()
 out_path = os.path.join(OUT_DIR, "fig_residuals.png")
-fig.savefig(out_path, dpi=200, bbox_inches='tight')
+fig.savefig(out_path, dpi=600, bbox_inches='tight')
 plt.close()
 print(f"Saved: {out_path}")
 print("Residual stats: mean={:.4f}, std={:.4f}, skew={:.4f}, kurt={:.4f}".format(

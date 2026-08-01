@@ -41,6 +41,8 @@ Xm_te = torch.tensor(X_main[te_mask], dtype=torch.float32)
 y_te = y_de[te_mask]
 # Build test target months for calendar-month grouping
 from src.data_preprocessing import create_sequences
+import nature_figure_config  # nature-figure: 600 DPI + Arial + clean spines
+
 df_months = df_de['month'].values
 
 # Load E7 hyperparameters
@@ -130,7 +132,7 @@ ax2.grid(True, alpha=0.3, axis='y')
 
 plt.tight_layout()
 out_path = os.path.join(OUT_DIR, "fig_uncertainty.png")
-fig.savefig(out_path, dpi=200, bbox_inches='tight')
+fig.savefig(out_path, dpi=600, bbox_inches='tight')
 plt.close()
 print(f"Saved: {out_path}")
 print(f"Mean prediction uncertainty: {np.mean(ens_std):.4f} M km²")

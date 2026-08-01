@@ -188,9 +188,11 @@ ax2.text(0.03,0.97,"(b)",transform=ax2.transAxes,fontsize=14,fontweight="bold",v
 plt.tight_layout()
 os.makedirs(OUT_DIR, exist_ok=True)
 out_path = os.path.join(OUT_DIR, "fig_ablation_e7.png")
-fig.savefig(out_path, dpi=200, bbox_inches="tight"); plt.close()
+fig.savefig(out_path, dpi=600, bbox_inches="tight"); plt.close()
 print("\nSaved: {}".format(out_path))
 import pandas as pd
+import nature_figure_config  # nature-figure: 600 DPI + Arial + clean spines
+
 csv_path = os.path.join(config.RESULTS_DIR, "ablation_e7_results.csv")
 rows = []
 for k in order:
