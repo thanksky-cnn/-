@@ -1,129 +1,116 @@
-# gen_fig_ablation.py
-# Fig 4.9: Ablation study waterfall chart.
-# Shows RMSE change when removing each variable from the full model.
+"""图 3.3：消融验证 — ΔRMSE 水平条形图.
+
+从全五变量模型(E19, RMSE=0.5243)逐个移除变量。
+移除PNA/NAO/SST改善性能，仅移除Nino3.4导致退化。
+关键发现：多变量冗余而非信号不足是性能瓶颈。
+"""
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import numpy as np
-import os, sys, json
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import nature_figure_config
+from thesis_data import PHASE3_ABLATION, PHASE3_BASELINE_RMSE
+
 fm.fontManager.addfont("C:/Windows/Fonts/simhei.ttf")
-plt.rcParams["font.sans-serif"] = ["SimHei"]
+plt.rcParams["font.sans-serif"] = ["Arial", "SimHei", "DejaVu Sans"]
 plt.rcParams["axes.unicode_minus"] = False
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import config
+OUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'outputs', 'plots', 'paper')
+os.makedirs(OUT_DIR, exist_ok=True)
 
-OUTPUT_DIR = os.path.join(config.OUTPUT_DIR, "plots", "paper")
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+# Sort by delta (improvement first)
+entries = sorted(PHASE3_ABLATION.items(), key=lambda x: x[1]['delta'])
+labels = [f"{v['label']}\n(移除 {v['removed']})" for _, v in entries]
+deltas = np.array([v['delta'] for _, v in entries])
+rmse_vals = np.array([v['rmse'] for _, v in entries])
 
-ABLATION_LABELS_CN = {
-    "ao": "AO",
-    "sst": "SST",
-    "nao": "NAO",
-    "nino34": "Nino3.4",
-    "pdo": "PDO",
-    "t2m": "T2M",
-    "slp": "SLP",
-    "lag12_ice": "Lag-12 Ice",
-}
+E19_RMSE = PHASE3_BASELINE_RMSE
 
-
-def plot_ablation_waterfall(baseline_rmse, ablation_results, save_path):
-    """
-    Waterfall chart: start from full model RMSE, show impact of removing each variable.
-
-    Args:
-        baseline_rmse: RMSE of full model (all variables)
-        ablation_results: {var_name: rmse_without_var}
-    """
-    fig, ax = plt.subplots(figsize=(12, 6))
-
-    # Sort variables by impact (largest degradation when removed = most important)
-    impacts = [(var, ablation_results[var] - baseline_rmse)
-               for var in ablation_results]
-    impacts.sort(key=lambda x: x[1], reverse=True)
-
-    variables = [ABLATION_LABELS_CN.get(v, v) for v, _ in impacts]
-    deltas = [d for _, d in impacts]
-
-    # Bar chart
-    colors = ['#d73027' if d > 0 else '#1b7837' for d in deltas]
-    x = np.arange(len(variables))
-    ax.bar(x, deltas, color=colors, alpha=0.85, edgecolor='black', linewidth=0.5)
-
-    # Reference line
-    ax.axhline(y=0, color='black', linewidth=1.5, linestyle='-', alpha=0.8)
-    ax.axhline(y=0, color='gray', linewidth=0.5, linestyle='--', alpha=0.3)
-
-    # Annotations
-    for i, (var, delta) in enumerate(zip(variables, deltas)):
-        sign = '+' if delta > 0 else ''
-        y_pos = delta + (0.0005 if delta >= 0 else -0.0005)
-        va = 'bottom' if delta >= 0 else 'top'
-        ax.text(i, y_pos, f'{sign}{delta:.4f}', ha='center', va=va,
-                fontsize=9, fontweight='bold',
-                color='#d73027' if delta > 0 else '#1b7837')
-
-    ax.set_xticks(x)
-    ax.set_xticklabels(variables, fontsize=11, rotation=30, ha='right')
-    ax.set_ylabel('RMSE Change when removed (百万平方公里)', fontsize=12)
-    ax.set_xlabel('Removed Variable', fontsize=12)
-    ax.grid(axis='y', alpha=0.3)
-
-    # Title-like annotation
-    ax.text(0.5, 1.02,
-            f'Full model RMSE: {baseline_rmse:.4f} | '
-            f'Positive = variable is helpful (RMSE increases when removed)',
-            transform=ax.transAxes, fontsize=10, ha='center', style='italic')
-
-    ax.text(0.03, 0.97, '(a)', transform=ax.transAxes, fontsize=16, fontweight='bold', va='top')
-
-    plt.tight_layout()
-    fig.savefig(save_path, dpi=200, bbox_inches='tight')
-    plt.close()
-    print(f"Saved: {save_path}")
-
-
-def load_ablation_results():
-    """Try to load ablation results from Phase 2 or 3 directories."""
-    results = {}
-    for dir_path in [config.RESULTS_PHASE2_DIR]:
-        if not os.path.exists(dir_path):
-            continue
-        for fname in os.listdir(dir_path):
-            if fname.endswith(".json") and not fname.startswith("phase"):
-                with open(os.path.join(dir_path, fname), "r") as f:
-                    d = json.load(f)
-                    results[fname.replace(".json", "")] = d
-    return results
-
-
-if __name__ == "__main__":
-    results = load_ablation_results()
-
-    if results:
-        # Find full model (all variables, max aux_vars)
-        full_model = max(results.items(), key=lambda x: len(x[1].get("aux_vars", [])))
-        full_id, full_data = full_model
-        full_rmse = full_data.get("rmse_mean", full_data.get("ensemble_rmse", 0))
-        full_vars = full_data.get("aux_vars", [])
-
-        # Find ablation experiments (full model minus one variable)
-        ablation = {}
-        for eid, data in results.items():
-            aux_vars = data.get("aux_vars", [])
-            if len(aux_vars) == len(full_vars) - 1:
-                missing = set(full_vars) - set(aux_vars)
-                if len(missing) == 1:
-                    var_name = list(missing)[0]
-                    ablation[var_name] = data.get("rmse_mean", data.get("ensemble_rmse", 0))
-
-        if ablation:
-            out_path = os.path.join(OUTPUT_DIR, "fig_ablation_waterfall.png")
-            plot_ablation_waterfall(full_rmse, ablation, out_path)
-        else:
-            print("No ablation experiments found (need full model minus one variable).")
-            print("Run Phase 3 ablation experiments (E22-E25) first.")
+# ---- Color: gradient by delta magnitude ----
+colors = []
+for d in deltas:
+    if d < 0:
+        # Green gradient: deeper = larger improvement
+        intensity = min(abs(d) / 0.012, 1.0)  # normalize to ~0.01
+        r = int(0x2E - intensity * 0x1E)  # 0x2E -> 0x10
+        g = int(0x9E + intensity * 0x30)  # 0x9E -> 0xCE
+        b = int(0x44 - intensity * 0x20)  # 0x44 -> 0x24
+        colors.append(f'#{max(r,0):02x}{min(g,255):02x}{max(b,0):02x}')
     else:
-        print("No results found. Run Phase 2/3 experiments first.")
+        # Red gradient: deeper = larger degradation
+        intensity = min(abs(d) / 0.012, 1.0)
+        r = int(0xE5)  # stay red
+        g = int(0x39 - intensity * 0x30)
+        b = int(0x35 - intensity * 0x20)
+        colors.append(f'#{r:02x}{max(g,0):02x}{max(b,0):02x}')
+
+fig, ax = plt.subplots(figsize=(9, 4.5))
+
+y_pos = range(len(entries))
+bars = ax.barh(y_pos, deltas, color=colors, edgecolor='#272727', linewidth=0.8, height=0.55)
+
+# Zero line (E19 baseline)
+ax.axvline(0, color='#272727', linewidth=1.5, zorder=5)
+
+# Shaded background zones
+ax.axvspan(-0.012, 0, alpha=0.04, color='#2E9E44', zorder=0)
+ax.axvspan(0, 0.012, alpha=0.04, color='#E53935', zorder=0)
+
+# Annotations
+for i, (d, rmse, l) in enumerate(zip(deltas, rmse_vals, labels)):
+    pct = d / E19_RMSE * 100
+    color = colors[i]
+
+    # Delta + percentage inside/outside bar
+    if d < 0:
+        x_text = d - 0.0004
+        ha = 'right'
+    else:
+        x_text = d + 0.0004
+        ha = 'left'
+    ax.text(x_text, i, f'Δ={d:+.4f}  ({pct:+.1f}%)   |   RMSE={rmse:.4f}',
+            va='center', ha=ha, fontsize=7.5, color='#272727')
+
+# Axis labels
+ax.set_yticks(list(y_pos))
+ax.set_yticklabels(labels, fontsize=7.5)
+ax.set_xlabel('相对于 E19 全五变量 (RMSE=0.5243) 的变化 (百万平方公里)', fontsize=9)
+ax.invert_yaxis()
+
+# Legend
+from matplotlib.patches import Patch
+legend_elements = [
+    Patch(facecolor='#2E9E44', alpha=0.7, label='移除后改善 (RMSE ↓)'),
+    Patch(facecolor='#E53935', alpha=0.7, label='移除后退化 (RMSE ↑)'),
+]
+ax.legend(handles=legend_elements, loc='lower right', fontsize=7.5, frameon=False)
+
+# Subfigure tag
+ax.text(0.02, 0.97, '(b) 消融验证', transform=ax.transAxes,
+        fontsize=14, fontweight='bold', va='top', color='#272727')
+
+# Annotation: key finding
+ax.text(0.98, 0.12,
+        '← 移除极地大气指数改善\n移除热带海洋信号(Niño3.4)是唯一退化 →',
+        transform=ax.transAxes, fontsize=7, color='#666666',
+        ha='right', va='bottom', fontstyle='italic')
+
+plt.tight_layout(pad=2)
+for fmt in ['png', 'svg']:
+    fpath = os.path.join(OUT_DIR, f'fig_ch3_ablation.{fmt}')
+    if fmt == 'png':
+        fig.savefig(fpath, dpi=600, bbox_inches='tight', facecolor='white')
+    else:
+        fig.savefig(fpath, bbox_inches='tight', facecolor='white')
+    print(f'  Saved: {fpath}')
+plt.close(fig)
+
+print('=== 图 3.3 消融验证 ===')
+print(f'  E19 基线 RMSE = {E19_RMSE:.4f}')
+for _, v in entries:
+    pct = v['delta'] / E19_RMSE * 100
+    print(f'  {v["label"]:30s}  移除 {v["removed"]:8s}  RMSE={v["rmse"]:.4f}  Δ={v["delta"]:+.4f} ({pct:+.1f}%)')
+print('Done.')
