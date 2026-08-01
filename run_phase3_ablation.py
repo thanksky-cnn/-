@@ -41,6 +41,7 @@ ABLATIONS = {
     "E21": {"remove": "nino34",  "desc": "All − Nino3.4 (缺热带信号)"},
     "E22": {"remove": "sst",     "desc": "All − SST (缺海洋热力)"},
     "E25": {"remove": "pna",     "desc": "All − PNA (缺太平洋扇区)"},
+    "E33": {"remove": "ao",      "desc": "All − AO (缺北极全域信号)"},
 }
 
 # E19 (全变量) 从 Phase 2 复用作为全变量参照

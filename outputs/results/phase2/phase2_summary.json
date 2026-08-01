@@ -1,41 +1,27 @@
 {
   "E15": {
-    "desc": "AO + NAO (\u540c\u6247\u533a)",
+    "desc": "AO + NAO (同扇区)",
     "ensemble_rmse": 0.5229356599071507,
     "rmse_mean": 0.5287486854397386,
     "rmse_std": 0.007421032516640566,
     "n_aux_ch": 6
   },
-  "E23": {
-    "desc": "AO + PNA (\u8de8\u6247\u533a)",
-    "ensemble_rmse": 0.5244251794842811,
-    "rmse_mean": 0.5366324788705765,
-    "rmse_std": 0.022098350651057114,
-    "n_aux_ch": 6
-  },
   "E16": {
-    "desc": "AO + Nino3.4 (\u6781\u5730+\u70ed\u5e26)",
+    "desc": "AO + Nino3.4 (极地+热带)",
     "ensemble_rmse": 0.5271519450578134,
     "rmse_mean": 0.5378311213198466,
     "rmse_std": 0.017479094480260977,
     "n_aux_ch": 7
   },
   "E17": {
-    "desc": "SST + Nino3.4 (\u6d77\u6d0b\u5185\u90e8)",
+    "desc": "SST + Nino3.4 (海洋内部)",
     "ensemble_rmse": 0.5097748454248794,
     "rmse_mean": 0.522779297756895,
     "rmse_std": 0.01013109018595298,
     "n_aux_ch": 8
   },
-  "E24": {
-    "desc": "AO+NAO+PNA (\u5927\u6c14\u5168\u6247\u533a)",
-    "ensemble_rmse": 0.5382608361184134,
-    "rmse_mean": 0.5527733616652011,
-    "rmse_std": 0.016969279498703804,
-    "n_aux_ch": 9
-  },
   "E18": {
-    "desc": "AO+SST+NAO (\u5927\u6c14+\u6d77\u6d0b)",
+    "desc": "AO+SST+NAO (大气+海洋)",
     "ensemble_rmse": 0.5218382540319008,
     "rmse_mean": 0.5353881630764828,
     "rmse_std": 0.014528411842057077,
@@ -47,5 +33,26 @@
     "rmse_mean": 0.5372209091402499,
     "rmse_std": 0.019059532229871053,
     "n_aux_ch": 17
+  },
+  "E23": {
+    "desc": "AO + PNA (跨扇区)",
+    "ensemble_rmse": 0.5244251794842811,
+    "rmse_mean": 0.5366324788705765,
+    "rmse_std": 0.022098350651057114,
+    "n_aux_ch": 6
+  },
+  "E24": {
+    "desc": "AO+NAO+PNA (大气全扇区)",
+    "ensemble_rmse": 0.5382608361184134,
+    "rmse_mean": 0.5527733616652011,
+    "rmse_std": 0.016969279498703804,
+    "n_aux_ch": 9
+  },
+  "E34": {
+    "desc": "PNA + NAO (跨太平洋-大西洋扇区)",
+    "ensemble_rmse": 0.5369868552932476,
+    "rmse_mean": 0.5487973342280869,
+    "rmse_std": 0.019742703176033924,
+    "n_aux_ch": 6
   }
 }

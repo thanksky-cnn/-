@@ -39,6 +39,8 @@ COMBINATIONS = {
     "E23": {"aux_vars": ["ao", "pna"],       "desc": "AO + PNA (跨扇区)"},
     "E16": {"aux_vars": ["ao", "nino34"],    "desc": "AO + Nino3.4 (极地+热带)"},
     "E17": {"aux_vars": ["sst", "nino34"],   "desc": "SST + Nino3.4 (海洋内部)"},
+    # --- 跨太平洋-大西洋扇区互补 ---
+    "E34": {"aux_vars": ["pna", "nao"],      "desc": "PNA + NAO (跨太平洋-大西洋扇区)"},
     # --- 三变量及以上 ---
     "E24": {"aux_vars": ["ao", "nao", "pna"],"desc": "AO+NAO+PNA (大气全扇区)"},
     "E18": {"aux_vars": ["ao", "sst", "nao"],"desc": "AO+SST+NAO (大气+海洋)"},
