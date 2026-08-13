@@ -1,0 +1,35 @@
+{
+  "exp_id": "E012",
+  "region": "barents",
+  "region_name": "巴伦支海",
+  "aux_vars": [
+    "ao"
+  ],
+  "aux_label": "+AO",
+  "type": "single",
+  "n_aux_ch": 3,
+  "n_seeds": 5,
+  "rmse_mean": 0.0960999054395805,
+  "rmse_std": 0.001274204263345851,
+  "ensemble_rmse": 0.09554185201346259,
+  "ensemble_mae": 0.0751497681683182,
+  "ens_attn_weights": [
+    0.17303160429000855,
+    0.16817802786827088,
+    0.16582630574703217,
+    0.16471809446811675,
+    0.164219269156456,
+    0.1640266627073288
+  ],
+  "hp": {
+    "main_hidden": 256,
+    "aux_hidden": 64,
+    "aux_seq_len": 6,
+    "num_layers": 1,
+    "dropout": 0.1,
+    "aux_dropout": 0.6,
+    "batch_size": 32,
+    "learning_rate": 0.000635,
+    "weight_decay": 2.59e-06
+  }
+}

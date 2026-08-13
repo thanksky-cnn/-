@@ -1,0 +1,29 @@
+{
+  "region": "kara",
+  "desc": "喀拉海 + AO",
+  "aux_vars": [
+    "ao"
+  ],
+  "baseline_rmse": 0.12019652051166882,
+  "unified_rmse": 0.11589872455466559,
+  "tuned_rmse": 0.11008831634879572,
+  "delta_vs_baseline": -0.0101082041628731,
+  "delta_vs_unified": -0.005810408205869866,
+  "delta_pct_vs_baseline": -8.41,
+  "best_params": {
+    "aux_hidden": 64,
+    "aux_seq_len": 10,
+    "aux_dropout": 0.30000000000000004,
+    "learning_rate": 0.00365070258199149,
+    "weight_decay": 4.84119404280155e-06
+  },
+  "best_val_loss": 0.01827721856534481,
+  "seed_rmses": [
+    0.1064748718730016,
+    0.11999919382705762,
+    0.1143397374895205,
+    0.11429312957928137,
+    0.11259247661467528
+  ],
+  "verdict": "✅ 实质改善"
+}

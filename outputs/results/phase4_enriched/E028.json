@@ -1,0 +1,35 @@
+{
+  "exp_id": "E028",
+  "region": "greenland",
+  "region_name": "格陵兰海",
+  "aux_vars": [
+    "nao"
+  ],
+  "aux_label": "+NAO",
+  "type": "single",
+  "n_aux_ch": 3,
+  "n_seeds": 5,
+  "rmse_mean": 0.07444870101225794,
+  "rmse_std": 0.0018036927941300315,
+  "ensemble_rmse": 0.07355852547691896,
+  "ensemble_mae": 0.05858456704676712,
+  "ens_attn_weights": [
+    0.16995465755462646,
+    0.16748349070549012,
+    0.16628120839595795,
+    0.16566477417945863,
+    0.16537467539310455,
+    0.16524116098880767
+  ],
+  "hp": {
+    "main_hidden": 256,
+    "aux_hidden": 64,
+    "aux_seq_len": 6,
+    "num_layers": 1,
+    "dropout": 0.1,
+    "aux_dropout": 0.6,
+    "batch_size": 32,
+    "learning_rate": 0.000635,
+    "weight_decay": 2.59e-06
+  }
+}

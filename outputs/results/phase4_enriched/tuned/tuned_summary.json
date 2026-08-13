@@ -1,0 +1,205 @@
+{
+  "barents": {
+    "region": "barents",
+    "desc": "巴伦支海 + AO",
+    "aux_vars": [
+      "ao"
+    ],
+    "baseline_rmse": 0.09966741733422144,
+    "unified_rmse": 0.09554185201346259,
+    "tuned_rmse": 0.09181269433954496,
+    "delta_vs_baseline": -0.007854722994676475,
+    "delta_vs_unified": -0.003729157673917627,
+    "delta_pct_vs_baseline": -7.88,
+    "best_params": {
+      "aux_hidden": 16,
+      "aux_seq_len": 6,
+      "aux_dropout": 0.0,
+      "learning_rate": 0.00534516611064682,
+      "weight_decay": 5.975027999960288e-07
+    },
+    "best_val_loss": 0.009557145647704601,
+    "seed_rmses": [
+      0.09164615972860536,
+      0.09829500584812337,
+      0.09305461066035926,
+      0.09241064581094333,
+      0.09623315861496938
+    ],
+    "verdict": "✅ 实质改善"
+  },
+  "bering": {
+    "region": "bering",
+    "desc": "白令海 + AO",
+    "aux_vars": [
+      "ao"
+    ],
+    "baseline_rmse": 0.09913999655497469,
+    "unified_rmse": 0.09683159937374344,
+    "tuned_rmse": 0.08836925763103518,
+    "delta_vs_baseline": -0.01077073892393951,
+    "delta_vs_unified": -0.008462341742708268,
+    "delta_pct_vs_baseline": -10.86,
+    "best_params": {
+      "aux_hidden": 64,
+      "aux_seq_len": 8,
+      "aux_dropout": 0.2,
+      "learning_rate": 0.007335580495957028,
+      "weight_decay": 8.947232156563663e-05
+    },
+    "best_val_loss": 0.01198884705081582,
+    "seed_rmses": [
+      0.09169656164713545,
+      0.09855600803329892,
+      0.08918557327030181,
+      0.08409230482421992,
+      0.09344745469985852
+    ],
+    "verdict": "✅ 实质改善"
+  },
+  "central_arctic": {
+    "region": "central_arctic",
+    "desc": "中北冰洋 + NAO",
+    "aux_vars": [
+      "nao"
+    ],
+    "baseline_rmse": 0.14390766266029156,
+    "unified_rmse": 0.13990678752613978,
+    "tuned_rmse": 0.14168416056126443,
+    "delta_vs_baseline": -0.002223502099027136,
+    "delta_vs_unified": 0.001777373035124652,
+    "delta_pct_vs_baseline": -1.55,
+    "best_params": {
+      "aux_hidden": 112,
+      "aux_seq_len": 10,
+      "aux_dropout": 0.2,
+      "learning_rate": 0.0034752685500731954,
+      "weight_decay": 4.867760103374734e-05
+    },
+    "best_val_loss": 0.005414914106950164,
+    "seed_rmses": [
+      0.14113261717793804,
+      0.15319795489225574,
+      0.1456517971420902,
+      0.14198557917245963,
+      0.14352740023432023
+    ],
+    "verdict": "✅ 实质改善"
+  },
+  "chukchi": {
+    "region": "chukchi",
+    "desc": "楚科奇海 + PNA",
+    "aux_vars": [
+      "pna"
+    ],
+    "baseline_rmse": 0.08007414699760965,
+    "unified_rmse": 0.08267444266518416,
+    "tuned_rmse": 0.08428193902281889,
+    "delta_vs_baseline": 0.004207792025209239,
+    "delta_vs_unified": 0.0016074963576347273,
+    "delta_pct_vs_baseline": 5.25,
+    "best_params": {
+      "aux_hidden": 16,
+      "aux_seq_len": 6,
+      "aux_dropout": 0.0,
+      "learning_rate": 0.00534516611064682,
+      "weight_decay": 5.975027999960288e-07
+    },
+    "best_val_loss": 0.004437523195520043,
+    "seed_rmses": [
+      0.0855948124113465,
+      0.08371854955210926,
+      0.0880393556459123,
+      0.09047316752387119,
+      0.0820845075903141
+    ],
+    "verdict": "✗ 劣于基线"
+  },
+  "greenland": {
+    "region": "greenland",
+    "desc": "格陵兰海 + Nino3.4",
+    "aux_vars": [
+      "nino34"
+    ],
+    "baseline_rmse": 0.0718876930052298,
+    "unified_rmse": 0.07177604499036332,
+    "tuned_rmse": 0.06987170785804638,
+    "delta_vs_baseline": -0.00201598514718343,
+    "delta_vs_unified": -0.0019043371323169411,
+    "delta_pct_vs_baseline": -2.8,
+    "best_params": {
+      "aux_hidden": 128,
+      "aux_seq_len": 6,
+      "aux_dropout": 0.5,
+      "learning_rate": 0.0023069664979452945,
+      "weight_decay": 1.065486573002256e-06
+    },
+    "best_val_loss": 0.004696781747043133,
+    "seed_rmses": [
+      0.07326000415940612,
+      0.07167158566576018,
+      0.0676366092297117,
+      0.07105780807361356,
+      0.0720259097275694
+    ],
+    "verdict": "✅ 实质改善"
+  },
+  "kara": {
+    "region": "kara",
+    "desc": "喀拉海 + AO",
+    "aux_vars": [
+      "ao"
+    ],
+    "baseline_rmse": 0.12019652051166882,
+    "unified_rmse": 0.11589872455466559,
+    "tuned_rmse": 0.11008831634879572,
+    "delta_vs_baseline": -0.0101082041628731,
+    "delta_vs_unified": -0.005810408205869866,
+    "delta_pct_vs_baseline": -8.41,
+    "best_params": {
+      "aux_hidden": 64,
+      "aux_seq_len": 10,
+      "aux_dropout": 0.30000000000000004,
+      "learning_rate": 0.00365070258199149,
+      "weight_decay": 4.84119404280155e-06
+    },
+    "best_val_loss": 0.01827721856534481,
+    "seed_rmses": [
+      0.1064748718730016,
+      0.11999919382705762,
+      0.1143397374895205,
+      0.11429312957928137,
+      0.11259247661467528
+    ],
+    "verdict": "✅ 实质改善"
+  },
+  "laptev": {
+    "region": "laptev",
+    "desc": "拉普捷夫海 + PNA",
+    "aux_vars": [
+      "pna"
+    ],
+    "baseline_rmse": 0.12016203239792873,
+    "unified_rmse": 0.11793284447669775,
+    "tuned_rmse": 0.11992400625265935,
+    "delta_vs_baseline": -0.00023802614526938215,
+    "delta_vs_unified": 0.0019911617759616057,
+    "delta_pct_vs_baseline": -0.2,
+    "best_params": {
+      "aux_hidden": 48,
+      "aux_seq_len": 10,
+      "aux_dropout": 0.8,
+      "learning_rate": 0.00362247043909693,
+      "weight_decay": 2.6837172337794657e-05
+    },
+    "best_val_loss": 0.015102691948413849,
+    "seed_rmses": [
+      0.12211509874411096,
+      0.12304544161745345,
+      0.12648613621722984,
+      0.12507764181985054,
+      0.12389628413547048
+    ],
+    "verdict": "≈ 无增量"
+  }
+}

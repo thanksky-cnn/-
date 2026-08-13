@@ -1,0 +1,35 @@
+{
+  "exp_id": "E002",
+  "region": "bering",
+  "region_name": "白令海",
+  "aux_vars": [
+    "ao"
+  ],
+  "aux_label": "+AO",
+  "type": "single",
+  "n_aux_ch": 3,
+  "n_seeds": 5,
+  "rmse_mean": 0.09703256652683531,
+  "rmse_std": 0.0017446303317362004,
+  "ensemble_rmse": 0.09683159937374344,
+  "ensemble_mae": 0.06555746245803896,
+  "ens_attn_weights": [
+    0.16215154230594636,
+    0.16405630707740784,
+    0.16610031723976135,
+    0.16786808669567108,
+    0.1692429542541504,
+    0.17058081924915314
+  ],
+  "hp": {
+    "main_hidden": 256,
+    "aux_hidden": 64,
+    "aux_seq_len": 6,
+    "num_layers": 1,
+    "dropout": 0.1,
+    "aux_dropout": 0.6,
+    "batch_size": 32,
+    "learning_rate": 0.000635,
+    "weight_decay": 2.59e-06
+  }
+}

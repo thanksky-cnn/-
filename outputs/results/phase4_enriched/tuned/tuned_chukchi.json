@@ -1,0 +1,29 @@
+{
+  "region": "chukchi",
+  "desc": "楚科奇海 + PNA",
+  "aux_vars": [
+    "pna"
+  ],
+  "baseline_rmse": 0.08007414699760965,
+  "unified_rmse": 0.08267444266518416,
+  "tuned_rmse": 0.08428193902281889,
+  "delta_vs_baseline": 0.004207792025209239,
+  "delta_vs_unified": 0.0016074963576347273,
+  "delta_pct_vs_baseline": 5.25,
+  "best_params": {
+    "aux_hidden": 16,
+    "aux_seq_len": 6,
+    "aux_dropout": 0.0,
+    "learning_rate": 0.00534516611064682,
+    "weight_decay": 5.975027999960288e-07
+  },
+  "best_val_loss": 0.004437523195520043,
+  "seed_rmses": [
+    0.0855948124113465,
+    0.08371854955210926,
+    0.0880393556459123,
+    0.09047316752387119,
+    0.0820845075903141
+  ],
+  "verdict": "✗ 劣于基线"
+}

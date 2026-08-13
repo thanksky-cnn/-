@@ -1,0 +1,35 @@
+{
+  "exp_id": "E007",
+  "region": "chukchi",
+  "region_name": "楚科奇海",
+  "aux_vars": [
+    "ao"
+  ],
+  "aux_label": "+AO",
+  "type": "single",
+  "n_aux_ch": 3,
+  "n_seeds": 5,
+  "rmse_mean": 0.08398732023729336,
+  "rmse_std": 0.0009072513348569506,
+  "ensemble_rmse": 0.08351083735841518,
+  "ensemble_mae": 0.05821672141050756,
+  "ens_attn_weights": [
+    0.16697593331336974,
+    0.16666871011257173,
+    0.16651568710803985,
+    0.16651530265808107,
+    0.1665895015001297,
+    0.16673489511013032
+  ],
+  "hp": {
+    "main_hidden": 256,
+    "aux_hidden": 64,
+    "aux_seq_len": 6,
+    "num_layers": 1,
+    "dropout": 0.1,
+    "aux_dropout": 0.6,
+    "batch_size": 32,
+    "learning_rate": 0.000635,
+    "weight_decay": 2.59e-06
+  }
+}

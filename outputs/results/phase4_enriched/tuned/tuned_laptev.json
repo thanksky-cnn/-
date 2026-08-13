@@ -1,0 +1,29 @@
+{
+  "region": "laptev",
+  "desc": "拉普捷夫海 + PNA",
+  "aux_vars": [
+    "pna"
+  ],
+  "baseline_rmse": 0.12016203239792873,
+  "unified_rmse": 0.11793284447669775,
+  "tuned_rmse": 0.11992400625265935,
+  "delta_vs_baseline": -0.00023802614526938215,
+  "delta_vs_unified": 0.0019911617759616057,
+  "delta_pct_vs_baseline": -0.2,
+  "best_params": {
+    "aux_hidden": 48,
+    "aux_seq_len": 10,
+    "aux_dropout": 0.8,
+    "learning_rate": 0.00362247043909693,
+    "weight_decay": 2.6837172337794657e-05
+  },
+  "best_val_loss": 0.015102691948413849,
+  "seed_rmses": [
+    0.12211509874411096,
+    0.12304544161745345,
+    0.12648613621722984,
+    0.12507764181985054,
+    0.12389628413547048
+  ],
+  "verdict": "≈ 无增量"
+}

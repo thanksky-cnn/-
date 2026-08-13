@@ -179,17 +179,17 @@ class SeaIceLSTM(nn.Module):
 
 
 class SeaIceDualEncoderLSTM(nn.Module):
-    """Dual-encoder LSTM: main encoder for sea ice, aux encoder for lagged AO/SST.
+    """Dual-encoder LSTM with temporal self-attention over aux hidden states.
 
     Architecture:
-      - Main encoder: LSTM (12-month sea ice)  → main_hidden
-      - Aux encoder:  LSTM (last N months of lagged AO/SST) → aux_hidden
-      - Extra dropout on aux path to suppress noise
+      - Main encoder: LSTM (12-month sea ice) → main_hidden
+      - Aux encoder:  LSTM (last N months of lagged climate indices)
+                      → self-attention pooling over ALL time steps
+                      → aux_hidden (weighted sum)
+      - The self-attention mechanism lets the model learn, for example,
+        that "NAO at lag-3" matters more than "NAO at lag-1" for sea ice
+        prediction, without requiring manual lag selection.
       - Concat(main_hidden, aux_hidden) → Linear → output_len
-
-    This prevents AO/SST noise from contaminating the main LSTM's recurrent
-    state across all 12 time steps. The aux encoder only sees the most recent
-    months, capturing short-term atmospheric/oceanic influence on sea ice.
     """
 
     def __init__(self, input_size=1, main_hidden=256, aux_hidden=64,
@@ -206,7 +206,7 @@ class SeaIceDualEncoderLSTM(nn.Module):
         )
         self.main_dropout = nn.Dropout(dropout)
 
-        # Aux encoder: processes last N months of lagged AO/SST
+        # Aux encoder: processes last N months of lagged climate indices
         self.aux_lstm = nn.LSTM(
             input_size=aux_input_size,
             hidden_size=aux_hidden,
@@ -215,10 +215,26 @@ class SeaIceDualEncoderLSTM(nn.Module):
         )
         self.aux_dropout = nn.Dropout(aux_dropout)  # stronger dropout on aux
 
+        # Temporal self-attention over aux hidden states (Bahdanau-style):
+        # A two-layer MLP with tanh activation learns a non-linear scalar
+        # importance score for each time step of the aux LSTM output, then
+        # softmax-normalizes across time. The non-linearity lets the model
+        # express "lag-3 is far more important than lag-1" — a single linear
+        # layer could only express a monotone re-weighting of the hidden
+        # dimensions and produced near-uniform weights in practice.
+        self.aux_attn = nn.Sequential(
+            nn.Linear(aux_hidden, aux_hidden // 2),
+            nn.Tanh(),
+            nn.Linear(aux_hidden // 2, 1),
+        )
+
         self.aux_seq_len = aux_seq_len
 
         # Fusion layer
         self.fc = nn.Linear(main_hidden + aux_hidden, output_len)
+
+        # Store latest attention weights for interpretability (not used in forward)
+        self._last_attn_weights = None
 
         self._init_weights()
 
@@ -229,6 +245,10 @@ class SeaIceDualEncoderLSTM(nn.Module):
                     nn.init.xavier_uniform_(param)
                 elif 'bias' in name:
                     nn.init.zeros_(param)
+        for layer in self.aux_attn:
+            if isinstance(layer, nn.Linear):
+                nn.init.xavier_uniform_(layer.weight)
+                nn.init.zeros_(layer.bias)
         nn.init.xavier_uniform_(self.fc.weight)
         nn.init.zeros_(self.fc.bias)
 
@@ -236,7 +256,7 @@ class SeaIceDualEncoderLSTM(nn.Module):
         """
         Args:
             x_main: (batch, 12, 1) — sea ice area sequence
-            x_aux:  (batch, aux_seq_len, aux_input_size) — lagged AO/SST
+            x_aux:  (batch, aux_seq_len, aux_input_size) — lagged climate indices
         Returns:
             (batch, output_len)
         """
@@ -245,15 +265,34 @@ class SeaIceDualEncoderLSTM(nn.Module):
         main_h = main_out[:, -1, :]  # (batch, main_hidden)
         main_h = self.main_dropout(main_h)
 
-        # Aux encoder
-        aux_out, _ = self.aux_lstm(x_aux)
-        aux_h = aux_out[:, -1, :]  # (batch, aux_hidden)
+        # Aux encoder → all hidden states
+        aux_out, _ = self.aux_lstm(x_aux)  # (batch, aux_seq_len, aux_hidden)
+
+        # Temporal self-attention pooling
+        # attn_scores: (batch, aux_seq_len, 1) — importance of each time step
+        attn_scores = self.aux_attn(aux_out)
+        attn_weights = F.softmax(attn_scores, dim=1)  # normalize over time
+        aux_h = torch.sum(attn_weights * aux_out, dim=1)  # (batch, aux_hidden)
+
+        # Store for interpretability (detach to avoid graph retention)
+        self._last_attn_weights = attn_weights.detach().squeeze(-1)  # (batch, aux_seq_len)
+
         aux_h = self.aux_dropout(aux_h)
 
         # Fusion
         combined = torch.cat([main_h, aux_h], dim=1)
         out = self.fc(combined)
         return out
+
+    def get_attention_weights(self):
+        """Return attention weights from the last forward pass.
+
+        Returns:
+            (batch, aux_seq_len) tensor, or None if no forward pass has been run.
+            Each row sums to 1.0 — higher values indicate time steps the model
+            relied on more heavily for the aux representation.
+        """
+        return self._last_attn_weights
 
 
 def count_parameters(model):

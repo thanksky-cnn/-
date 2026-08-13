@@ -38,18 +38,11 @@ OUT_PATH = os.path.join(BASE_DIR, "data", "lagged_features_v2.csv")
 #   lag_months: lag_only时的滞后月数 (默认12)
 # ============================================================
 VARIABLE_GROUPS = {
-    # Tier 0: 已有的AO和SST
+    # Tier 0: 极地大气遥相关
     "ao": {
         "csv": "data/ao_monthly.csv",
         "cols": ["ao"],
         "has_mask": False,
-        "n_lags": 2,
-        "lag_only": False,
-    },
-    "sst": {
-        "csv": "data/arctic_sst_monthly.csv",
-        "cols": ["sst"],
-        "has_mask": True,  # SST从1981年开始，之前NaN
         "n_lags": 2,
         "lag_only": False,
     },

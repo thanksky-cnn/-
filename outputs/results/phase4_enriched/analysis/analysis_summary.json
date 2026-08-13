@@ -1,0 +1,55 @@
+{
+  "n_experiments": 35,
+  "n_regions": 7,
+  "per_region_best": {
+    "bering": {
+      "baseline_rmse": 0.0982368131874378,
+      "best_index": "ao",
+      "best_rmse": 0.09702927123917382,
+      "best_delta": -0.0012075419482639738,
+      "best_delta_pct": -1.23
+    },
+    "chukchi": {
+      "baseline_rmse": 0.08019528879646719,
+      "best_index": "pna",
+      "best_rmse": 0.08291534680996102,
+      "best_delta": 0.0027200580134938285,
+      "best_delta_pct": 3.39
+    },
+    "barents": {
+      "baseline_rmse": 0.10070419956373776,
+      "best_index": "nao",
+      "best_rmse": 0.09427158384257622,
+      "best_delta": -0.006432615721161536,
+      "best_delta_pct": -6.39
+    },
+    "kara": {
+      "baseline_rmse": 0.1199367605273115,
+      "best_index": "nino34",
+      "best_rmse": 0.11518908784263633,
+      "best_delta": -0.004747672684675172,
+      "best_delta_pct": -3.96
+    },
+    "laptev": {
+      "baseline_rmse": 0.118783729729926,
+      "best_index": "pna",
+      "best_rmse": 0.11851930436939694,
+      "best_delta": -0.0002644253605290636,
+      "best_delta_pct": -0.22
+    },
+    "greenland": {
+      "baseline_rmse": 0.07106231671060846,
+      "best_index": "nino34",
+      "best_rmse": 0.07202557244755492,
+      "best_delta": 0.0009632557369464584,
+      "best_delta_pct": 1.36
+    },
+    "central_arctic": {
+      "baseline_rmse": 0.14370658124296712,
+      "best_index": "nao",
+      "best_rmse": 0.14143293303438625,
+      "best_delta": -0.002273648208580864,
+      "best_delta_pct": -1.58
+    }
+  }
+}

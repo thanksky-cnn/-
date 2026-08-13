@@ -9,7 +9,7 @@ from docx.oxml.ns import qn
 
 BASE = r"C:\Users\86152\PycharmProjects\2 +ao arctic_seaice_prediction lstm SIE"
 TEMPLATE = os.path.join(BASE, "write", "模板 基于LSTM的多源气候指数的北极海冰面积预测研究 (已自动恢复).docx")
-OUTPUT = os.path.join(BASE, "write", "基于LSTM的多源气候指数的北极海冰面积预测研究_填入终稿_v5.docx")
+OUTPUT = os.path.join(BASE, "write", "基于LSTM的多源气候指数的北极海冰面积预测研究_填入终稿_v7.docx")
 CHAPTERS_DIR = os.path.join(BASE, "write", "chapters")
 
 CHAPTER_FILES = [
@@ -99,8 +99,9 @@ def main():
                 content_items.append(("h3", clean(s[4:])))
                 i += 1
             elif s.startswith("$$"):
+                # 保留 LaTeX 公式块（单行 $$...$$）作为文本段落
+                content_items.append(("text", s))
                 i += 1
-                continue
             elif s.startswith("|"):
                 rows = []
                 while i < len(lines) and lines[i].strip().startswith("|"):

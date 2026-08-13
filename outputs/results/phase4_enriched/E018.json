@@ -1,0 +1,35 @@
+{
+  "exp_id": "E018",
+  "region": "kara",
+  "region_name": "喀拉海",
+  "aux_vars": [
+    "nao"
+  ],
+  "aux_label": "+NAO",
+  "type": "single",
+  "n_aux_ch": 3,
+  "n_seeds": 5,
+  "rmse_mean": 0.11840608902277916,
+  "rmse_std": 0.0027245699318718154,
+  "ensemble_rmse": 0.11632404982745047,
+  "ensemble_mae": 0.09041185260499301,
+  "ens_attn_weights": [
+    0.1736721158027649,
+    0.1689402163028717,
+    0.16606706380844116,
+    0.16447802186012267,
+    0.1636347383260727,
+    0.1632078468799591
+  ],
+  "hp": {
+    "main_hidden": 256,
+    "aux_hidden": 64,
+    "aux_seq_len": 6,
+    "num_layers": 1,
+    "dropout": 0.1,
+    "aux_dropout": 0.6,
+    "batch_size": 32,
+    "learning_rate": 0.000635,
+    "weight_decay": 2.59e-06
+  }
+}

@@ -1,0 +1,175 @@
+[
+  {
+    "exp_id": "E031",
+    "region": "central_arctic",
+    "region_name": "中北冰洋",
+    "aux_vars": null,
+    "aux_label": "纯冰基线",
+    "type": "baseline",
+    "n_aux_ch": 1,
+    "n_seeds": 5,
+    "rmse_mean": 0.1449824696272596,
+    "rmse_std": 0.0024174677574392875,
+    "ensemble_rmse": 0.14390766266029156,
+    "ensemble_mae": 0.10752798604213105,
+    "ens_attn_weights": [
+      0.16814754009246827,
+      0.16702542901039125,
+      0.16648430228233338,
+      0.16622172594070433,
+      0.16609276235103607,
+      0.16602832078933716
+    ],
+    "hp": {
+      "main_hidden": 256,
+      "aux_hidden": 64,
+      "aux_seq_len": 6,
+      "num_layers": 1,
+      "dropout": 0.1,
+      "aux_dropout": 0.6,
+      "batch_size": 32,
+      "learning_rate": 0.000635,
+      "weight_decay": 2.59e-06
+    }
+  },
+  {
+    "exp_id": "E032",
+    "region": "central_arctic",
+    "region_name": "中北冰洋",
+    "aux_vars": [
+      "ao"
+    ],
+    "aux_label": "+AO",
+    "type": "single",
+    "n_aux_ch": 3,
+    "n_seeds": 5,
+    "rmse_mean": 0.1420567029900967,
+    "rmse_std": 0.0010283389173758142,
+    "ensemble_rmse": 0.14087063364871885,
+    "ensemble_mae": 0.10504611024508148,
+    "ens_attn_weights": [
+      0.16728665232658385,
+      0.16672365367412567,
+      0.16652722656726837,
+      0.16647256314754486,
+      0.1664784550666809,
+      0.16651146113872528
+    ],
+    "hp": {
+      "main_hidden": 256,
+      "aux_hidden": 64,
+      "aux_seq_len": 6,
+      "num_layers": 1,
+      "dropout": 0.1,
+      "aux_dropout": 0.6,
+      "batch_size": 32,
+      "learning_rate": 0.000635,
+      "weight_decay": 2.59e-06
+    }
+  },
+  {
+    "exp_id": "E033",
+    "region": "central_arctic",
+    "region_name": "中北冰洋",
+    "aux_vars": [
+      "nao"
+    ],
+    "aux_label": "+NAO",
+    "type": "single",
+    "n_aux_ch": 3,
+    "n_seeds": 5,
+    "rmse_mean": 0.14111344152563293,
+    "rmse_std": 0.0007549566029686239,
+    "ensemble_rmse": 0.13990678752613978,
+    "ensemble_mae": 0.10431625298372954,
+    "ens_attn_weights": [
+      0.16734636425971985,
+      0.1668115109205246,
+      0.1665574938058853,
+      0.16645293831825256,
+      0.16641371250152587,
+      0.16641798317432405
+    ],
+    "hp": {
+      "main_hidden": 256,
+      "aux_hidden": 64,
+      "aux_seq_len": 6,
+      "num_layers": 1,
+      "dropout": 0.1,
+      "aux_dropout": 0.6,
+      "batch_size": 32,
+      "learning_rate": 0.000635,
+      "weight_decay": 2.59e-06
+    }
+  },
+  {
+    "exp_id": "E034",
+    "region": "central_arctic",
+    "region_name": "中北冰洋",
+    "aux_vars": [
+      "pna"
+    ],
+    "aux_label": "+PNA",
+    "type": "single",
+    "n_aux_ch": 3,
+    "n_seeds": 5,
+    "rmse_mean": 0.14177769500890366,
+    "rmse_std": 0.0004444127359762803,
+    "ensemble_rmse": 0.14056374466730692,
+    "ensemble_mae": 0.10545922415182314,
+    "ens_attn_weights": [
+      0.16699864566326142,
+      0.1666806161403656,
+      0.1665746957063675,
+      0.1665463477373123,
+      0.166588631272316,
+      0.16661108434200286
+    ],
+    "hp": {
+      "main_hidden": 256,
+      "aux_hidden": 64,
+      "aux_seq_len": 6,
+      "num_layers": 1,
+      "dropout": 0.1,
+      "aux_dropout": 0.6,
+      "batch_size": 32,
+      "learning_rate": 0.000635,
+      "weight_decay": 2.59e-06
+    }
+  },
+  {
+    "exp_id": "E035",
+    "region": "central_arctic",
+    "region_name": "中北冰洋",
+    "aux_vars": [
+      "nino34"
+    ],
+    "aux_label": "+Nino3.4",
+    "type": "single",
+    "n_aux_ch": 4,
+    "n_seeds": 5,
+    "rmse_mean": 0.14868323275445133,
+    "rmse_std": 0.0024226484461186706,
+    "ensemble_rmse": 0.14700172978851428,
+    "ensemble_mae": 0.11032034291252237,
+    "ens_attn_weights": [
+      0.17100930511951445,
+      0.1632693737745285,
+      0.16086014211177826,
+      0.16223378479480743,
+      0.16716074347496032,
+      0.17546665370464326
+    ],
+    "hp": {
+      "main_hidden": 256,
+      "aux_hidden": 64,
+      "aux_seq_len": 6,
+      "num_layers": 1,
+      "dropout": 0.1,
+      "aux_dropout": 0.6,
+      "batch_size": 32,
+      "learning_rate": 0.000635,
+      "weight_decay": 2.59e-06
+    }
+  }
+]

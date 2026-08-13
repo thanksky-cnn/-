@@ -1,0 +1,35 @@
+{
+  "exp_id": "E024",
+  "region": "laptev",
+  "region_name": "拉普捷夫海",
+  "aux_vars": [
+    "pna"
+  ],
+  "aux_label": "+PNA",
+  "type": "single",
+  "n_aux_ch": 3,
+  "n_seeds": 5,
+  "rmse_mean": 0.11908330006000165,
+  "rmse_std": 0.002308490129320229,
+  "ensemble_rmse": 0.11793284447669775,
+  "ensemble_mae": 0.08162240033961886,
+  "ens_attn_weights": [
+    0.17589050829410552,
+    0.16920421719551088,
+    0.16564844250679017,
+    0.1638398587703705,
+    0.16293838918209075,
+    0.16247859895229338
+  ],
+  "hp": {
+    "main_hidden": 256,
+    "aux_hidden": 64,
+    "aux_seq_len": 6,
+    "num_layers": 1,
+    "dropout": 0.1,
+    "aux_dropout": 0.6,
+    "batch_size": 32,
+    "learning_rate": 0.000635,
+    "weight_decay": 2.59e-06
+  }
+}

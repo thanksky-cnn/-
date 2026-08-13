@@ -1,0 +1,35 @@
+{
+  "exp_id": "E032",
+  "region": "central_arctic",
+  "region_name": "中北冰洋",
+  "aux_vars": [
+    "ao"
+  ],
+  "aux_label": "+AO",
+  "type": "single",
+  "n_aux_ch": 3,
+  "n_seeds": 5,
+  "rmse_mean": 0.1420567029900967,
+  "rmse_std": 0.0010283389173758142,
+  "ensemble_rmse": 0.14087063364871885,
+  "ensemble_mae": 0.10504611024508148,
+  "ens_attn_weights": [
+    0.16728665232658385,
+    0.16672365367412567,
+    0.16652722656726837,
+    0.16647256314754486,
+    0.1664784550666809,
+    0.16651146113872528
+  ],
+  "hp": {
+    "main_hidden": 256,
+    "aux_hidden": 64,
+    "aux_seq_len": 6,
+    "num_layers": 1,
+    "dropout": 0.1,
+    "aux_dropout": 0.6,
+    "batch_size": 32,
+    "learning_rate": 0.000635,
+    "weight_decay": 2.59e-06
+  }
+}

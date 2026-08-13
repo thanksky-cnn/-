@@ -1,0 +1,29 @@
+{
+  "region": "central_arctic",
+  "desc": "中北冰洋 + NAO",
+  "aux_vars": [
+    "nao"
+  ],
+  "baseline_rmse": 0.14390766266029156,
+  "unified_rmse": 0.13990678752613978,
+  "tuned_rmse": 0.14168416056126443,
+  "delta_vs_baseline": -0.002223502099027136,
+  "delta_vs_unified": 0.001777373035124652,
+  "delta_pct_vs_baseline": -1.55,
+  "best_params": {
+    "aux_hidden": 112,
+    "aux_seq_len": 10,
+    "aux_dropout": 0.2,
+    "learning_rate": 0.0034752685500731954,
+    "weight_decay": 4.867760103374734e-05
+  },
+  "best_val_loss": 0.005414914106950164,
+  "seed_rmses": [
+    0.14113261717793804,
+    0.15319795489225574,
+    0.1456517971420902,
+    0.14198557917245963,
+    0.14352740023432023
+  ],
+  "verdict": "✅ 实质改善"
+}

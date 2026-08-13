@@ -1,0 +1,33 @@
+{
+  "exp_id": "E006",
+  "region": "chukchi",
+  "region_name": "楚科奇海",
+  "aux_vars": null,
+  "aux_label": "纯冰基线",
+  "type": "baseline",
+  "n_aux_ch": 1,
+  "n_seeds": 5,
+  "rmse_mean": 0.08042799427949994,
+  "rmse_std": 0.0005043946790706479,
+  "ensemble_rmse": 0.08007414699760965,
+  "ensemble_mae": 0.05586133331580628,
+  "ens_attn_weights": [
+    0.16847915649414064,
+    0.1671976774930954,
+    0.16650014519691467,
+    0.16611961126327515,
+    0.16591014266014098,
+    0.16579343974590302
+  ],
+  "hp": {
+    "main_hidden": 256,
+    "aux_hidden": 64,
+    "aux_seq_len": 6,
+    "num_layers": 1,
+    "dropout": 0.1,
+    "aux_dropout": 0.6,
+    "batch_size": 32,
+    "learning_rate": 0.000635,
+    "weight_decay": 2.59e-06
+  }
+}

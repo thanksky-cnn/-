@@ -1,0 +1,29 @@
+{
+  "region": "greenland",
+  "desc": "格陵兰海 + Nino3.4",
+  "aux_vars": [
+    "nino34"
+  ],
+  "baseline_rmse": 0.0718876930052298,
+  "unified_rmse": 0.07177604499036332,
+  "tuned_rmse": 0.06987170785804638,
+  "delta_vs_baseline": -0.00201598514718343,
+  "delta_vs_unified": -0.0019043371323169411,
+  "delta_pct_vs_baseline": -2.8,
+  "best_params": {
+    "aux_hidden": 128,
+    "aux_seq_len": 6,
+    "aux_dropout": 0.5,
+    "learning_rate": 0.0023069664979452945,
+    "weight_decay": 1.065486573002256e-06
+  },
+  "best_val_loss": 0.004696781747043133,
+  "seed_rmses": [
+    0.07326000415940612,
+    0.07167158566576018,
+    0.0676366092297117,
+    0.07105780807361356,
+    0.0720259097275694
+  ],
+  "verdict": "✅ 实质改善"
+}
