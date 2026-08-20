@@ -66,6 +66,8 @@ def run_e1_univariate(fast_mode=False):
     import pandas as pd
     from sklearn.preprocessing import MinMaxScaler
     df = pd.read_csv(LAGGED_CSV)
+    target = config.TARGET_COLUMN
+    ol = config.OUTPUT_LEN
     area = df[target].values.reshape(-1, 1)
     scaler = MinMaxScaler(feature_range=(0, 1))
     area_scaled = scaler.fit_transform(area).flatten()
